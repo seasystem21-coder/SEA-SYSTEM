@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sea Laundry User</title>
+
+  <!-- ================== Map Leaflet CSS & JS ================== -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.min.js"></script>
+
+  <!-- ================== CSS GLOBAL ================== -->
+  <style>
+
+    /* ================= GLOBAL ================= */
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      background: #f9fafb;
+      color: #1f2937;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* ================== HEADER ================== */
+    header {
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white;
+      padding: 40px 20px;
+      border-bottom: 5px solid #facc15;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 1000px;
+      width: 95%;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #facc15;
+      padding: 8px;
+    }
+
+    .header-text h1 {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .header-text p {
+      opacity: 0.9;
+      margin-bottom: 15px;
+    }
+
+    .cta-btn {
+      display: block;
+      margin: 0 auto;
+      width: fit-content;
+      padding: 12px 25px;
+      background: #facc15;
+      color: #1f2937;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .cta-btn:hover {
+      transform: scale(1.05);
+    }
+
+    /* ================== BUBBLES ================== */
+    .bubble {
+      position: absolute;
+      bottom: -50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      animation: rise linear forwards;
+    }
+
+    @keyframes rise {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      to {
+        transform: translateY(-120vh);
+        opacity: 0;
+      }
+    }
+
+    /* ================== TAB MENU ================== */
+    .tab-menu {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1000px;
+      margin: 20px auto;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      overflow-x: visible;
+    }
+
+    .tab-menu .tab-btn {
+      flex: 1 1 120px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 50px;
+      background: #e2e8f0;
+      color: #1d4ed8;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .tab-menu .tab-btn.active {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .tab-menu .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 20%;
+      width: 60%;
+      height: 4px;
+      background: #facc15;
+      border-radius: 2px;
+    }
+
+    /* ================== TAB CONTENT ================== */
+    .tab-content {
+      display: none;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .tab-content.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ================== CARD & GRID ================== */
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    .grid-items {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .item {
+      background: #e2e8f0;
+      padding: 15px;
+      border-radius: 12px;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: all 0.4s;
+      text-align: center;
+    }
+
+    .item.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* ================== TOAST ================== */
+    #toast {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background: #3b82f6;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+      z-index: 9999;
+    }
+
+    #toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ================== RESPONSIVE ================== */
+    @media (max-width: 768px) {
+      #map {
+        height: 250px !important;
+        margin-bottom: 15px;
+      }
+
+      #btn-posisi {
+        width: 100% !important;
+        margin-bottom: 10px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #map {
+        height: 220px !important;
+      }
+
+      .form-group input,
+      .form-group select,
+      #btn-posisi,
+      button[type=submit] {
+        font-size: 0.95rem;
+        padding: 10px;
+      }
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+
+
+<!-- ========== MENU ========== -->
+<header>
+  <!-- Container header -->
+  <div class="header-inner">
+
+    <!-- Logo -->
+    <div class="logo">
+      <img 
+        src="https://raw.githubusercontent.com/My-data-file/Share/main/Logo.png" 
+        alt="Sea Laundry Logo" 
+        width="80" 
+        height="80"
+      >
+    </div>
+
+    <!-- Teks header -->
+    <div class="header-text">
+      <h1>Sea Laundry</h1>
+      <p>Cepat, rapi, dan bisa pesan online</p>
+      <a href="#order" class="cta-btn">Pesan Sekarang</a>
+    </div>
+
+  </div>
+</header>
+
+<!-- Menu Tab -->
+<nav class="tab-menu">
+  <button class="tab-btn" data-tab="home">Home</button>
+  <button class="tab-btn" data-tab="order">Pesan Laundry</button>
+  <button class="tab-btn" data-tab="status">Status Order</button>
+  <button class="tab-btn" data-tab="services">Layanan</button>
+  <button class="tab-btn" data-tab="faq">FAQ</button>
+  <button class="tab-btn" data-tab="promo">Promo</button>
+  <button class="tab-btn" data-tab="contact">Kontak</button>
+</nav>
+
+<!-- ================= TAB HOME ================= -->
+<div class="tab-content" id="home">
+  <div class="card">
+
+    <h2>Selamat Datang di Laundry Express</h2>
+
+    <div class="grid-items">
+      <div class="item">Laundry online modern dan cepat</div>
+      <div class="item">Pesan mudah, jemput & antar cucian Anda</div>
+      <div class="item">Cucian wangi & rapi</div>
+      <div class="item">Layanan pelanggan responsif via WhatsApp</div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- ================== TAB PESAN LAUNDRY ================== -->
+<div class="tab-content" id="order">
+  <div class="card">
+    <h2>Pesan Laundry</h2>
+
+    <form id="orderForm" class="modern-form">
+      <div class="form-grid" style="grid-template-columns: 1fr !important; gap:15px;">
+
+        <!-- Nama -->
+        <div class="form-group">
+          <input type="text" id="nama" placeholder=" " required>
+          <label for="nama">Nama Anda</label>
+          <span class="icon">👤</span>
+        </div>
+
+        <!-- No HP -->
+        <div class="form-group">
+          <input type="tel" id="nohp" placeholder=" " required>
+          <label for="nohp">No HP</label>
+          <span class="icon">📞</span>
+        </div>
+
+        <!-- Pilih Layanan -->
+        <div class="form-group">
+          <select id="layanan" required>
+            <option value="" disabled selected>Pilih Layanan</option>
+            <option value="cuci">Cuci Kering</option>
+            <option value="setrika">Setrika Saja</option>
+            <option value="cucisetrika">Cuci + Setrika</option>
+          </select>
+          <label for="layanan">Layanan</label>
+          <span class="icon">🧺</span>
+        </div>
+
+        <!-- Catatan Tambahan -->
+        <div class="form-group">
+          <input type="text" id="catatan" placeholder=" ">
+          <label for="catatan">Catatan Tambahan</label>
+          <span class="icon">📝</span>
+        </div>
+
+        <!-- Jadwal -->
+        <div class="form-group">
+          <input type="date" id="jadwal" placeholder=" " required>
+          <label for="jadwal">Jadwal Jemput / Antar</label>
+          <span class="icon">📅</span>
+        </div>
+
+        <!-- Jam -->
+        <div class="form-group">
+          <input type="time" id="jam" placeholder=" " required>
+          <label for="jam">Jam Penjemputan</label>
+          <span class="icon">⏰</span>
+        </div>
+
+        <!-- Alamat -->
+        <div class="form-group">
+          <input type="text" id="alamat" placeholder=" " required>
+          <label for="alamat">Alamat Lengkap</label>
+          <span class="icon">🏠</span>
+        </div>
+
+        <!-- Tombol Posisi Saya -->
+        <div style="width:100%; text-align:center;">
+          <button
+            type="button"
+            id="btn-posisi"
+            style="width:100%; padding:12px; border:none; border-radius:8px; background:#3b82f6; color:white; font-weight:600;"
+          >
+            📍 Posisi Saya
+          </button>
+        </div>
+
+        <!-- Map + Kolom Jarak & Waktu -->
+        <div id="map-container" style="position:relative;">
+          <div id="map" style="width:100%;height:300px;"></div>
+
+          <div
+            id="map-loading"
+            style="
+              display:none;
+              position:absolute;
+              top:50%;
+              left:50%;
+              transform:translate(-50%,-50%);
+              background:rgba(255,255,255,0.9);
+              padding:10px 20px;
+              border-radius:8px;
+              font-weight:bold;
+              z-index:1000;
+            "
+          >
+            Menghitung rute…
+          </div>
+        </div>
+
+        <!-- Kolom jarak & waktu -->
+        <div
+          id="route-info"
+          style="
+            margin-top:10px;
+            padding:12px;
+            background:#e2e8f0;
+            border-radius:8px;
+            font-weight:600;
+            color:#1f2937;
+            text-align:center;
+          "
+        >
+          Jarak: -- km | Perkiraan Waktu: -- menit
+        </div>
+
+        <!-- Tombol Submit WA -->
+        <button type="submit" class="btn-wa" style="width:100%;">
+          Kirim via WhatsApp
+        </button>
+
+        <!-- History -->
+        <div style="display:flex; gap:10px; margin-top:10px;">
+          <button
+            type="button"
+            id="pakaiTerakhir"
+            style="flex:1; padding:10px; border:none; border-radius:8px; background:#10b981; color:white; font-weight:600; cursor:pointer;"
+          >
+            Gunakan Pesanan Terakhir
+          </button>
+        </div>
+
+        <!-- Reset -->
+        <div style="width:100%; text-align:center;">
+          <button type="button" id="resetForm">Reset</button>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+
+  /* ================== FORM ================== */
+  .modern-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .form-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 12px 40px 12px 12px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background: #f9fafb;
+    transition: all 0.3s;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 12px rgba(59,130,246,0.3);
+  }
+
+  .form-group label {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    color: #6b7280;
+    font-size: 0.95rem;
+    pointer-events: none;
+    transition: 0.3s ease all;
+  }
+
+  .form-group input:focus + label,
+  .form-group input:not(:placeholder-shown) + label,
+  .form-group select:focus + label,
+  .form-group select:not([value=""]) + label {
+    top: -10px;
+    left: 10px;
+    background: #f9fafb;
+    font-size: 0.8rem;
+    color: #3b82f6;
+    padding: 0 5px;
+  }
+
+  .form-group .icon {
+    position: absolute;
+    right: 12px;
+    font-size: 1.2rem;
+    pointer-events: none;
+  }
+
+  .modern-form button {
+    padding: 12px;
+    background: #3b82f6;
+    color: white;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .modern-form button:hover {
+    transform: scale(1.03);
+  }
+
+  /* ================== RESET ================== */
+  #resetForm {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #ef4444;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  /* ================== BUTTONS ================== */
+  .btn {
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-loading { background: #3b82f6; }
+  .btn-success { background: #16a34a; }
+  .btn-error   { background: #ef4444; }
+
+  /* ================== MAP ================== */
+  #map {
+    width: 100%;
+    height: 300px;
+    border-radius: 12px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+  }
+
+  #map-loading {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.9);
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #1f2937;
+    z-index: 1001;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #map-loading::before {
+    content: "";
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    animation: spin 1s linear infinite;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+</style>
+
+
+
+
+
+
+<!-- ================= TAB STATUS ORDER ================= -->
+<div class="tab-content" id="status">
+  <div class="card">
+
+    <h2>Status Order</h2>
+
+    <!-- Detail Pesanan -->
+    <div id="detailPesanan" class="card">
+      <p>Belum ada pesanan.</p>
+    </div>
+
+    <!-- Status Progress -->
+    <div class="status-progress" id="statusSteps">
+
+      <div class="step">
+        <div class="step-circle">📝</div>
+        <div class="step-label">Dipesan</div>
+      </div>
+
+      <div class="step">
+        <div class="step-circle">🛵</div>
+        <div class="step-label">Dijemput</div>
+      </div>
+
+      <div class="step">
+        <div class="step-circle">🧺</div>
+        <div class="step-label">Diproses</div>
+      </div>
+
+      <div class="step">
+        <div class="step-circle">✅</div>
+        <div class="step-label">Selesai</div>
+      </div>
+
+      <div class="step">
+        <div class="step-circle">📦</div>
+        <div class="step-label">Diantar</div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-bar"></div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  /* ================== STATUS PROGRESS ================== */
+  .status-progress {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-top: 30px;
+    padding: 0 10px;
+  }
+
+  .status-progress .step {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+  }
+
+  .status-progress .step-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 6px;
+    transition: all 0.3s;
+  }
+
+  .status-progress .step-label {
+    font-size: 0.6rem;
+    text-align: center;
+    color: #555;
+  }
+
+  .status-progress .step.active .step-circle {
+    background: linear-gradient(135deg, #facc15, #fbbf24);
+    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.5);
+  }
+
+  .status-progress .progress-bar {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(135deg, #facc15, #fbbf24);
+    border-radius: 2px;
+    z-index: 0;
+    width: 0%;
+    transition: width 0.5s ease-in-out;
+  }
+
+  .status-progress .step.active::before {
+    opacity: 1;
+    animation: pulse 1s infinite alternate;
+  }
+
+  @keyframes pulse {
+    0%   { transform: translateX(-50%) scale(1); }
+    50%  { transform: translateX(-50%) scale(1.3); }
+    100% { transform: translateX(-50%) scale(1.1); }
+  }
+</style>
+
+
+
+
+
+
+<!-- ================= TAB LAYANAN ================= -->
+<div class="tab-content" id="services">
+  <div class="card">
+
+    <h2>Layanan & Harga</h2>
+
+    <div class="grid-items">
+      <div class="item">
+        <strong>Cuci Kering</strong><br>
+        Rp 10.000/kg
+      </div>
+
+      <div class="item">
+        <strong>Cuci + Setrika</strong><br>
+        Rp 15.000/kg
+      </div>
+
+      <div class="item">
+        <strong>Setrika Saja</strong><br>
+        Rp 7.000/kg
+      </div>
+
+      <div class="item">
+        <strong>Cuci Sepatu</strong><br>
+        Rp 20.000/pasangan
+      </div>
+
+      <div class="item">
+        <strong>Cuci Karpet</strong><br>
+        Rp 30.000/meter
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= TAB FAQ ================= -->
+<div class="tab-content" id="faq">
+  <div class="card">
+
+    <h2>FAQ</h2>
+
+    <div class="accordion">
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          Bagaimana cara memesan laundry?
+        </div>
+        <div class="accordion-content">
+          <p>
+            Cukup isi form di tab “Pesan Laundry” dan klik tombol kirim via WhatsApp.
+          </p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          Apakah laundry bisa dijemput?
+        </div>
+        <div class="accordion-content">
+          <p>
+            Ya, kami menyediakan layanan jemput & antar cucian di area tertentu.
+          </p>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <div class="accordion-header">
+          Berapa lama proses laundry?
+        </div>
+        <div class="accordion-content">
+          <p>
+            Proses normal 1-2 hari kerja, tergantung jenis layanan dan jumlah cucian.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* ================== ACCORDION ================== */
+  .accordion-item {
+    margin-bottom: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .accordion-header {
+    background: #e2e8f0;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+    position: relative;
+  }
+
+  .accordion-header::after {
+    content: '+';
+    position: absolute;
+    right: 20px;
+    font-weight: bold;
+    transition: transform 0.3s;
+  }
+
+  .accordion-header.active::after {
+    content: '−';
+  }
+
+  .accordion-header:hover {
+    background: #cbd5e1;
+  }
+
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    padding: 0 20px;
+    background: white;
+  }
+
+  .accordion-content p {
+    padding: 10px 0;
+    margin: 0;
+  }
+</style>
+
+
+
+
+<!-- ================= TAB PROMO ================= -->
+<div class="tab-content" id="promo">
+  <div class="card">
+
+    <h2>Promo Menarik</h2>
+
+    <div class="promo-grid">
+
+      <div class="promo-item">
+        <h3>Diskon 20% Laundry Kilat</h3>
+        <p>Hanya berlaku minggu ini! Segera pesan via WA.</p>
+      </div>
+
+      <div class="promo-item">
+        <h3>Cuci 5 Gratis 1</h3>
+        <p>Promo spesial untuk pelanggan setia.</p>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<style>
+  /* ================= CSS: Promo ================= */
+  .promo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  .promo-item {
+    background: #f3f4f6;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+  }
+
+  .promo-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  }
+</style>
+
+<!-- ================= TAB KONTAK ================= -->
+<div class="tab-content" id="contact">
+  <div class="card contact-info">
+
+    <h2>Kontak</h2>
+
+    <p>
+      WhatsApp:
+      <a href="https://wa.me/6287877929391" target="_blank">
+        +62 878-7792-9391
+      </a>
+    </p>
+
+    <p>
+      Email:
+      <a href="mailto:info@sealaundry.com">
+        info@sealaundry.com
+      </a>
+    </p>
+
+    <p>Alamat: Jl. Contoh No.123, Jakarta</p>
+
+  </div>
+</div>
+
+<style>
+  /* ================== KONTAK ================== */
+  .contact-info p {
+    margin: 10px 0;
+    font-size: 1rem;
+  }
+
+  .contact-info a {
+    color: #3b82f6;
+    font-weight: 600;
+  }
+
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<!-- ================= CHAT WA & TOAST ================= -->
+<div 
+  id="waChat" 
+  onclick="window.open('https://wa.me/6287877929391','_blank')"
+>
+  Chat WA
+</div>
+
+<div id="toast">
+  Pesanan berhasil dikirim!
+</div>
+
+<style>
+  /* ================== WA CHAT ================== */
+  #waChat {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #25d366;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    animation: pulseWA 2s infinite;
+    z-index: 999;
+  }
+
+  @keyframes pulseWA {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  /* ================= CSS: Tombol Kirim via WA ================= */
+  button.btn-wa,
+  a.btn-wa {
+    background-color: #25d366 !important;
+    color: white !important;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  button.btn-wa:hover,
+  a.btn-wa:hover {
+    background-color: #20b954 !important;
+  }
+
+  /* ================= CSS: Hide Status Update ================= */
+  .last-update {
+    display: none !important;
+  }
+</style>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <p>&copy; 2025 Sea Laundry. All rights reserved.</p>
+</footer>
+
+<style>
+  /* ================== FOOTER ================== */
+  footer {
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  footer p {
+    margin: 5px 0;
+    font-weight: 600;
+  }
+</style>
+
+
+
+
+
+
+
+
+<!-- ========== JS PESAN LAUNDRY ========== -->
+<script>
+  // ================= LocalStorage Auto-Save =================
+  const fields = ['nama', 'alamat', 'nohp', 'layanan', 'jadwal', 'jam', 'catatan'];
+
+  window.addEventListener('DOMContentLoaded', () => {
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      const saved = localStorage.getItem('order_' + id);
+
+      if (saved !== null) el.value = saved;
+
+      el.dispatchEvent(new Event('input'));
+    });
+  });
+
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', () => {
+      localStorage.setItem('order_' + id, el.value);
+    });
+  });
+
+  // ===== Format otomatis No HP =====
+  const nohpInput = document.getElementById('nohp');
+
+  nohpInput.addEventListener('input', (e) => {
+    let val = e.target.value;
+
+    val = val.replace(/\D/g, ''); // Hapus semua kecuali angka
+
+    if (val.startsWith('0')) {
+      val = '+62' + val.slice(1);
+    } else if (val.startsWith('62')) {
+      val = '+62' + val.slice(2);
+    } else if (!val.startsWith('+62')) {
+      val = '+62' + val;
+    }
+
+    if (val.length > 15) val = val.slice(0, 15);
+
+    e.target.value = val;
+  });
+
+  // ================= Tombol "Reset" =================
+  document.getElementById('resetForm').addEventListener('click', function () {
+    if (confirm('Apakah kamu yakin ingin mereset semua inputan?')) {
+      document.getElementById('orderForm').reset();
+
+      // hapus localStorage
+      ['nama', 'alamat', 'nohp', 'jenis', 'berat', 'catatan'].forEach(id => {
+        localStorage.removeItem('order_' + id);
+      });
+
+      // isi default nomor HP jadi +62 lagi
+      document.getElementById('nohp').value = '+62';
+    }
+  });
+
+  // ================= Tab & Animasi =================
+  const tabs = document.querySelectorAll('.tab-btn');
+  const contents = document.querySelectorAll('.tab-content');
+  const shownTabs = {};
+
+  const showItems = (tabId) => {
+    if (shownTabs[tabId]) return;
+
+    shownTabs[tabId] = true;
+
+    const items = document
+      .getElementById(tabId)
+      .querySelectorAll('.item');
+
+    items.forEach((i, j) => {
+      setTimeout(() => i.classList.add('show'), j * 100);
+    });
+  };
+
+  let statusLoaded = false;
+
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabs.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      contents.forEach(c => c.classList.remove('active'));
+
+      const tab = document.getElementById(btn.dataset.tab);
+      tab.classList.add('active');
+
+      showItems(btn.dataset.tab);
+
+      if (btn.dataset.tab === 'status') {
+        loadStatusFromGAS();
+
+        const lastUpdate = new Date();
+        let p = tab.querySelector('.last-update');
+
+        if (!p) {
+          p = document.createElement('p');
+          p.classList.add('last-update');
+          p.style.fontSize = '0.6rem';
+          p.style.color = '#555';
+          p.style.marginTop = '10px';
+
+          tab.querySelector('.card').appendChild(p);
+        }
+
+        p.textContent =
+          'Terakhir diperbarui: ' + lastUpdate.toLocaleTimeString();
+      }
+    });
+  });
+
+  showItems('home');
+
+  // ================= Tombol "Pesan Sekarang" =================
+  document.querySelector('.cta-btn').addEventListener('click', e => {
+    e.preventDefault();
+
+    const orderTabBtn = document.querySelector(
+      '.tab-btn[data-tab="order"]'
+    );
+
+    orderTabBtn.click();
+
+    setTimeout(() => {
+      const form = document.getElementById('orderForm');
+
+      if (form) {
+        form.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+
+        form
+          .querySelector('input, select, textarea')
+          ?.focus();
+      }
+    }, 300);
+  });
+
+  // ================= Apps Script Integration =================
+  const GAS_URL =
+    'https://script.google.com/macros/s/AKfycbzsRfuyn0JHI5IH5AHFwRMxa_5AxXlDBiWnzCX_dacxda2_miG1_vLSTPc5sUKO6AbSEw/exec';
+
+  const waBtn = document.getElementById('waChat');
+
+  waBtn.addEventListener('click', () => {
+    waBtn.style.transform = 'scale(1.1)';
+
+    setTimeout(() => {
+      waBtn.style.transform = '';
+    }, 200);
+
+    window.open('https://wa.me/6287877929391', '_blank');
+  });
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+
+    toast.textContent = msg;
+    toast.classList.add('show');
+    toast.style.opacity = 0;
+
+    setTimeout(() => (toast.style.opacity = 1), 50);
+
+    setTimeout(() => {
+      toast.style.opacity = 0;
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 500);
+    }, 3000);
+  }
+
+  // ================= Form submit WA + GAS =================
+  document
+    .getElementById('orderForm')
+    .addEventListener('submit', e => {
+      e.preventDefault();
+
+      if (
+        !confirm(
+          'Apakah Anda yakin ingin mengirim pesanan via WhatsApp?'
+        )
+      ) {
+        return;
+      }
+
+      const nama = document.getElementById('nama').value.trim();
+      const nohp = document.getElementById('nohp').value.trim();
+      const layanan = document.getElementById('layanan').value;
+      const catatan = document.getElementById('catatan').value.trim();
+      const tanggal = document.getElementById('jadwal').value;
+      const jam = document.getElementById('jam').value;
+      const jadwal = tanggal + ' ' + jam;
+      const alamat = document.getElementById('alamat').value.trim();
+
+      const now = new Date();
+      const selectedDateTime = new Date(`${tanggal}T${jam}`);
+
+      if (selectedDateTime < now) {
+        alert('Jadwal tidak boleh di masa lalu');
+        return;
+      }
+
+      const mapsLink =
+        document.getElementById('alamat').dataset.maplink ||
+        'https://www.google.com/maps/search/?api=1&query=' +
+          encodeURIComponent(alamat);
+
+      const waMessage = `*Halo, saya ingin memesan laundry :*\n\n• *Nama :* ${nama}\n• *No HP :* ${nohp}\n• *Layanan :* ${layanan}\n• *Catatan :* ${catatan}\n• *Jadwal Penjemputan:* ${tanggal} jam ${jam}\n• *Alamat :* ${alamat}\n• *Lihat di Maps :* ${mapsLink}\n\n*Kami akan segera menghubungi Anda untuk konfirmasi. Terima kasih!*`;
+
+      window.open(
+        'https://wa.me/6287877929391?text=' +
+          encodeURIComponent(waMessage),
+        '_blank'
+      );
+
+      // Pindah ke tab Status Order
+      document
+        .querySelector('.tab-btn[data-tab="status"]')
+        .click();
+
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({
+          type: 'PesanLaundry',
+          payload: {
+            nama,
+            nohp,
+            layanan,
+            catatan,
+            jadwal,
+            alamat
+          }
+        })
+      })
+        .then(() => {
+          showToast('Pesanan berhasil dikirim!');
+
+          fields.forEach(id =>
+            localStorage.removeItem('order_' + id)
+          );
+
+          document.getElementById('orderForm').reset();
+
+          if (userMarker) map.removeLayer(userMarker);
+          userMarker = null;
+
+          if (rutePolyline) map.removeLayer(rutePolyline);
+          rutePolyline = null;
+
+          document.getElementById('route-info').textContent =
+            'Jarak: -- km | Perkiraan Waktu: -- menit';
+
+          map.setView([laundryLat, laundryLon], 13);
+        })
+        .catch(err => {
+          console.error(
+            'Gagal mengirim ke Spreadsheet:',
+            err
+          );
+
+          alert(
+            'Terjadi masalah saat menyimpan ke Spreadsheet'
+          );
+        });
+    });
+</script>
+
+
+
+
+
+
+<!-- ================= Map Leaflet JS ================= -->
+<script>
+  const laundryLat = -6.200000;
+  const laundryLon = 106.816666;
+
+  let map = null,
+      laundryMarker = null,
+      userMarker = null,
+      rutePolyline = null;
+
+  // ===== Inisialisasi Map =====
+  function initMap() {
+    if (map) return;
+
+    map = L.map('map', {
+      zoomControl: false,
+      attributionControl: false
+    }).setView([laundryLat, laundryLon], 13);
+
+    L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      { attribution: '&copy; OpenStreetMap contributors' }
+    ).addTo(map);
+
+    laundryMarker = L.marker([laundryLat, laundryLon])
+      .addTo(map)
+      .bindPopup('<b>Sea Laundry</b>', {
+        autoClose: false,
+        closeOnClick: false
+      })
+      .openPopup();
+  }
+
+  // ===== Marker user + rute =====
+  function placeUserMarker(lat, lng) {
+    const userLatLng = [lat, lng];
+
+    const greenIcon = L.icon({
+      iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -28]
+    });
+
+    if (userMarker) {
+      userMarker
+        .setLatLng(userLatLng)
+        .setIcon(greenIcon)
+        .setPopupContent('<b>Posisi Saya</b>')
+        .openPopup();
+    } else {
+      userMarker = L.marker(userLatLng, { icon: greenIcon })
+        .addTo(map)
+        .bindPopup('<b>Posisi Saya</b>', {
+          autoClose: false,
+          closeOnClick: false
+        })
+        .openPopup();
+    }
+
+    map.fitBounds(
+      L.latLngBounds([userLatLng, [laundryLat, laundryLon]]),
+      { padding: [50, 50] }
+    );
+
+    updateRute(userLatLng, [laundryLat, laundryLon]);
+  }
+
+  // ===== Update Rute =====
+  function updateRute(userLatLng, laundryLatLng) {
+    const infoDiv = document.getElementById('route-info');
+    const loadingDiv = document.getElementById('map-loading');
+
+    loadingDiv.style.display = 'flex';
+    infoDiv.textContent = 'Menghitung jarak & waktu…';
+
+    if (rutePolyline) map.removeLayer(rutePolyline);
+
+    const url = `https://router.project-osrm.org/route/v1/driving/${userLatLng[1]},${userLatLng[0]};${laundryLatLng[1]},${laundryLatLng[0]}?overview=full&geometries=geojson&alternatives=false`;
+
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        loadingDiv.style.display = 'none';
+
+        if (data.routes && data.routes.length > 0) {
+          const coords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+
+          rutePolyline = L.polyline(coords, {
+            color: 'blue',
+            weight: 4
+          }).addTo(map);
+
+          const jarakKm = (data.routes[0].distance / 1000).toFixed(1);
+          const waktuMenit = Math.ceil(data.routes[0].duration / 60);
+
+          infoDiv.textContent =
+            `Jarak: ${jarakKm} km | Perkiraan Waktu: ${waktuMenit} menit`;
+        } else {
+          infoDiv.textContent = 'Gagal menghitung rute';
+        }
+      })
+      .catch(err => {
+        loadingDiv.style.display = 'none';
+        console.error('Gagal load rute OSRM:', err);
+        infoDiv.textContent = 'Gagal menghitung rute';
+      });
+  }
+
+  // ===== Tombol Posisi Saya =====
+  const btnPosisi = document.getElementById('btn-posisi');
+
+  btnPosisi.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      alert('Browser tidak mendukung geolocation');
+      return;
+    }
+
+    btnPosisi.disabled = true;
+
+    const originalText = btnPosisi.textContent;
+    btnPosisi.textContent = '📍 Mencari…';
+    btnPosisi.style.background = '#3b82f6';
+
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        const mapLink =
+          `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+
+        fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`
+        )
+          .then(res => res.json())
+          .then(data => {
+            const displayName = data.display_name || '';
+
+            document.getElementById('alamat').value = displayName;
+            document.getElementById('alamat').dataset.maplink = mapLink;
+          })
+          .catch(err => {
+            console.error('Reverse geocoding gagal:', err);
+
+            document.getElementById('alamat').value =
+              `(Lat:${lat.toFixed(6)}, Lng:${lng.toFixed(6)})`;
+
+            document.getElementById('alamat').dataset.maplink = mapLink;
+          });
+
+        placeUserMarker(lat, lng);
+
+        btnPosisi.disabled = false;
+        btnPosisi.textContent = originalText;
+        btnPosisi.style.background = '#16a34a';
+      },
+      err => {
+        alert('Gagal dapatkan lokasi: ' + err.message);
+
+        btnPosisi.disabled = false;
+        btnPosisi.textContent = originalText;
+        btnPosisi.style.background = '#ef4444';
+      }
+    );
+  });
+
+  // ===== Init map saat tab Order dibuka =====
+  document
+    .querySelector('.tab-btn[data-tab="order"]')
+    .addEventListener('click', () => {
+      setTimeout(() => {
+        initMap();
+        map.invalidateSize();
+      }, 300);
+    });
+
+  // ===== Init map jika tab Order aktif =====
+  window.addEventListener('DOMContentLoaded', () => {
+    const activeTab = document.querySelector('.tab-btn.active');
+
+    if (activeTab && activeTab.dataset.tab === 'order') {
+      initMap();
+      map.invalidateSize();
+    }
+  });
+</script>
+
+
+
+
+
+<!-- ========== JS STATUS ORDER ========== -->
+<script>
+  // ================= Status Order =================
+  function updateProgressBar(lastStatus) {
+    const bar = document.querySelector('#statusSteps .progress-bar');
+    if (!bar) return;
+
+    const order = ["Dipesan", "Dijemput", "Diproses", "Selesai", "Diantar"];
+    const index = order.indexOf(lastStatus);
+    const percent = ((index + 1) / order.length) * 100;
+
+    bar.style.transition = 'width 0.5s ease-in-out';
+    bar.style.width = percent + '%';
+  }
+
+  function updateStatusSteps(lastStatus) {
+    const steps = document.querySelectorAll('#statusSteps .step');
+    const order = ["Dipesan", "Dijemput", "Diproses", "Selesai", "Diantar"];
+
+    steps.forEach((step, i) => {
+      if (i <= order.indexOf(lastStatus)) {
+        step.classList.add('active');
+      } else {
+        step.classList.remove('active');
+      }
+    });
+
+    updateProgressBar(lastStatus);
+  }
+
+  function loadStatusFromGAS() {
+    fetch(GAS_URL, {
+      method: "POST",
+      body: JSON.stringify({ type: "GetAllStatus" })
+    })
+      .then(res => res.json())
+      .then(data => {
+        const lastStatus =
+          (data.status.length > 0)
+            ? data.status[data.status.length - 1]
+            : (localStorage.getItem('lastStatus') || "Dipesan");
+
+        localStorage.setItem('lastStatus', lastStatus);
+        updateStatusSteps(lastStatus);
+      })
+      .catch(err => {
+        console.error("Gagal ambil status:", err);
+
+        const lastStatus =
+          localStorage.getItem('lastStatus') || "Dipesan";
+
+        updateStatusSteps(lastStatus);
+      });
+  }
+
+  // ================= Load Tab Terakhir =================
+  tabs.forEach(btn => {
+    btn.addEventListener('click', () => {
+      localStorage.setItem('lastActiveTab', btn.dataset.tab);
+    });
+  });
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const lastTab = localStorage.getItem('lastActiveTab');
+
+    if (lastTab) {
+      const btn = document.querySelector(`.tab-btn[data-tab="${lastTab}"]`);
+      if (btn) btn.click();
+    } else {
+      document.querySelector('.tab-btn.active').click();
+    }
+  });
+
+  // ================= Accordion =================
+  document.querySelectorAll('.accordion-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const content = header.nextElementSibling;
+      const isActive = header.classList.contains('active');
+
+      document.querySelectorAll('.accordion-header')
+        .forEach(h => h.classList.remove('active'));
+
+      document.querySelectorAll('.accordion-content')
+        .forEach(c => c.style.maxHeight = null);
+
+      if (!isActive) {
+        header.classList.add('active');
+        content.style.maxHeight = content.scrollHeight + "px";
+      }
+    });
+  });
+
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.accordion-header.active')
+      .forEach(header => {
+        const content = header.nextElementSibling;
+        content.style.maxHeight = content.scrollHeight + "px";
+      });
+  });
+
+  // ====== SIMPAN + TAMPILKAN PESANAN ======
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("orderForm");
+    const resetBtn = document.getElementById("resetForm");
+    const detailContainer = document.getElementById("detailPesanan");
+
+    function tampilkanPesanan(pesanan) {
+      detailContainer.innerHTML = "";
+
+      const heading = document.createElement("h3");
+      heading.textContent = "Detail Pesanan Terakhir";
+      detailContainer.appendChild(heading);
+
+      const fields = [
+        ["Nama", pesanan.nama],
+        ["No. HP", pesanan.nohp],
+        ["Alamat", pesanan.alamat],
+        ["Layanan", pesanan.layanan],
+        ["Jadwal Jemput", pesanan.jadwal],
+        ["Jam Jemput", pesanan.jam],
+        ["Catatan", pesanan.catatan || "Tidak ada"]
+      ];
+
+      fields.forEach(([label, value]) => {
+        const p = document.createElement("p");
+        p.innerHTML = `<b>${label}:</b> ${value}`;
+        detailContainer.appendChild(p);
+      });
+    }
+
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const pesanan = {
+          nama: document.getElementById("nama").value.trim(),
+          nohp: document.getElementById("nohp").value.trim(),
+          alamat: document.getElementById("alamat").value.trim(),
+          layanan: document.getElementById("layanan").value,
+          jadwal: document.getElementById("jadwal").value,
+          jam: document.getElementById("jam").value,
+          catatan: document.getElementById("catatan").value.trim()
+        };
+
+        if (
+          !pesanan.nama ||
+          !pesanan.nohp ||
+          !pesanan.alamat ||
+          !pesanan.layanan ||
+          !pesanan.jadwal ||
+          !pesanan.jam
+        ) {
+          alert("Harap isi semua field wajib!");
+          return;
+        }
+
+        localStorage.setItem("pesananTerakhir", JSON.stringify(pesanan));
+        tampilkanPesanan(pesanan);
+        form.reset();
+      });
+    }
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        form.reset();
+        localStorage.removeItem("pesananTerakhir");
+        detailContainer.innerHTML = "<p>Belum ada pesanan.</p>";
+      });
+    }
+
+    const data = localStorage.getItem("pesananTerakhir");
+    if (data) {
+      tampilkanPesanan(JSON.parse(data));
+    }
+  });
+
+  const pakaiBtn = document.getElementById("pakaiTerakhir");
+
+  if (pakaiBtn) {
+    pakaiBtn.addEventListener("click", () => {
+      const data = localStorage.getItem("pesananTerakhir");
+
+      if (!data) {
+        alert("Belum ada pesanan terakhir yang tersimpan.");
+        return;
+      }
+
+      if (confirm("Apakah Anda yakin ingin mengisi form dengan pesanan terakhir?")) {
+        const pesanan = JSON.parse(data);
+
+        document.getElementById("nama").value = pesanan.nama || "";
+        document.getElementById("nohp").value = pesanan.nohp || "";
+        document.getElementById("alamat").value = pesanan.alamat || "";
+        document.getElementById("layanan").value = pesanan.layanan || "";
+        document.getElementById("jadwal").value = pesanan.jadwal || "";
+        document.getElementById("jam").value = pesanan.jam || "";
+        document.getElementById("catatan").value = pesanan.catatan || "";
+      }
+    });
+  }
+</script>
+
+
+
+
+
+<!-- ========== JS HEADER & FOOTER ========== -->
+<script>
+  // ================= Gelembung Header & Footer =================
+  const headerElem = document.querySelector('header');
+  const footerElem = document.querySelector('footer');
+
+  function createBubble(elem) {
+    if (elem.querySelectorAll('.bubble').length > 20) return;
+
+    const bubble = document.createElement('div');
+    bubble.classList.add('bubble');
+
+    const size = Math.random() * 40 + 20;
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.left = Math.random() * 100 + '%';
+    bubble.style.animationDuration = (Math.random() * 6 + 6) + 's';
+
+    elem.appendChild(bubble);
+
+    bubble.addEventListener('animationend', () => bubble.remove());
+  }
+
+  setInterval(() => createBubble(headerElem), 800);
+  setInterval(() => createBubble(footerElem), 800);
+</script>
+
+
+
+</body>
+</html>
