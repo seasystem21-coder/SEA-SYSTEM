@@ -4,9 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sea Laundry User</title>
+  <title>Laundry User</title>
 
-  <!-- ================== Map Leaflet CSS & JS ================== -->
+  <!-- ================== Map Leaflet JS ================== -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -15,7 +15,7 @@
   <!-- ================== CSS GLOBAL ================== -->
   <style>
 
-    /* ================= GLOBAL ================= */
+    /* ================= BODY ================= */
     body {
       font-family: 'Segoe UI', Tahoma, sans-serif;
       margin: 0;
@@ -362,14 +362,14 @@
         <!-- Jadwal -->
         <div class="form-group">
           <input type="date" id="jadwal" placeholder=" " required>
-          <label for="jadwal">Jadwal Jemput / Antar</label>
+          <label for="jadwal">Jadwal Penjemputan</label>
           <span class="icon">📅</span>
         </div>
 
         <!-- Jam -->
         <div class="form-group">
           <input type="time" id="jam" placeholder=" " required>
-          <label for="jam">Jam Penjemputan</label>
+          <label for="jam">Waktu Pemesanan</label>
           <span class="icon">⏰</span>
         </div>
 
@@ -394,74 +394,30 @@
         <!-- Map + Kolom Jarak & Waktu -->
         <div id="map-container" style="position:relative;">
           <div id="map" style="width:100%;height:300px;"></div>
-
-          <div
-            id="map-loading"
-            style="
-              display:none;
-              position:absolute;
-              top:50%;
-              left:50%;
-              transform:translate(-50%,-50%);
-              background:rgba(255,255,255,0.9);
-              padding:10px 20px;
-              border-radius:8px;
-              font-weight:bold;
-              z-index:1000;
-            "
-          >
-            Menghitung rute…
-          </div>
+          <div id="map-loading">Menghitung rute…</div>
         </div>
 
         <!-- Kolom jarak & waktu -->
-        <div
-          id="route-info"
-          style="
-            margin-top:10px;
-            padding:12px;
-            background:#e2e8f0;
-            border-radius:8px;
-            font-weight:600;
-            color:#1f2937;
-            text-align:center;
-          "
-        >
+        <div id="route-info">
           Jarak: -- km | Perkiraan Waktu: -- menit
         </div>
 
         <!-- Tombol Submit WA -->
-        <button type="submit" class="btn-wa" style="width:100%;">
-          Kirim via WhatsApp
+        <button type="submit" class="btn-wa" style="width:100%; background:#25d366; color:white; padding:15px; border-radius:12px; font-weight:bold; border:none; cursor:pointer;">
+          Kirim Pesanan
         </button>
-
-        <!-- History -->
-        <div style="display:flex; gap:10px; margin-top:10px;">
-          <button
-            type="button"
-            id="pakaiTerakhir"
-            style="flex:1; padding:10px; border:none; border-radius:8px; background:#10b981; color:white; font-weight:600; cursor:pointer;"
-          >
-            Gunakan Pesanan Terakhir
-          </button>
-        </div>
-
-        <!-- Reset -->
-        <div style="width:100%; text-align:center;">
-          <button type="button" id="resetForm">Reset</button>
-        </div>
 
       </div>
     </form>
   </div>
 </div>
 
-<style>
 
+<style>
   /* ================== FORM ================== */
   .modern-form .form-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 15px;
   }
 
@@ -518,54 +474,28 @@
     pointer-events: none;
   }
 
-  .modern-form button {
-    padding: 12px;
-    background: #3b82f6;
-    color: white;
-    font-weight: 600;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-
   .modern-form button:hover {
-    transform: scale(1.03);
+    filter: brightness(0.9);
+    transform: scale(1.01);
   }
 
-  /* ================== RESET ================== */
-  #resetForm {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #ef4444;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-
-  /* ================== BUTTONS ================== */
-  .btn {
-    padding: 8px 12px;
-    border-radius: 6px;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-  }
-
-  .btn-loading { background: #3b82f6; }
-  .btn-success { background: #16a34a; }
-  .btn-error   { background: #ef4444; }
-
-  /* ================== MAP ================== */
+  /* ================== MAP & INFO ================== */
   #map {
     width: 100%;
     height: 300px;
     border-radius: 12px;
     margin-top: 5px;
     border: 1px solid #ccc;
+  }
+
+  #route-info {
+    margin-top: 10px;
+    padding: 12px;
+    background: #e2e8f0;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #1f2937;
+    text-align: center;
   }
 
   #map-loading {
@@ -580,9 +510,7 @@
     font-weight: 600;
     color: #1f2937;
     z-index: 1001;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    text-align: center;
   }
 
   #map-loading::before {
@@ -590,19 +518,19 @@
     border: 4px solid #f3f3f3;
     border-top: 4px solid #3b82f6;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     animation: spin 1s linear infinite;
-    display: block;
-    margin-bottom: 8px;
+    display: inline-block;
+    margin-bottom: 5px;
   }
 
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
 </style>
+
 
 
 
@@ -612,118 +540,160 @@
 <!-- ================= TAB STATUS ORDER ================= -->
 <div class="tab-content" id="status">
   <div class="card">
+    <h2>Cek Status Pesanan</h2>
 
-    <h2>Status Order</h2>
-
-    <!-- Detail Pesanan -->
-    <div id="detailPesanan" class="card">
-      <p>Belum ada pesanan.</p>
+    <!-- Input Filter No HP -->
+    <div id="authStatus" style="margin-bottom: 20px; text-align: center;">
+      <p style="font-size: 0.9rem; color: #666;">Masukkan No HP Anda untuk melihat riwayat pesanan</p>
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <input type="tel" id="searchNoHP" placeholder="+628123..." 
+               style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
+        <button id="btnCekStatus" class="btn-refresh" style="padding: 10px 20px;">Cek</button>
+      </div>
     </div>
 
-    <!-- Status Progress -->
-    <div class="status-progress" id="statusSteps">
-
-      <div class="step">
-        <div class="step-circle">📝</div>
-        <div class="step-label">Dipesan</div>
+    <!-- Area Hasil (Awalnya Tersembunyi) -->
+    <div id="statusResult" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <h3 style="margin: 0; font-size: 1rem;">Riwayat Pesanan Anda</h3>
+        <button id="btnRefreshStatus" class="btn-refresh">🔄 Refresh</button>
+      </div>
+      
+      <div id="orderGrid" class="order-grid">
+        <!-- Hasil akan muncul di sini -->
       </div>
 
-      <div class="step">
-        <div class="step-circle">🛵</div>
-        <div class="step-label">Dijemput</div>
-      </div>
-
-      <div class="step">
-        <div class="step-circle">🧺</div>
-        <div class="step-label">Diproses</div>
-      </div>
-
-      <div class="step">
-        <div class="step-circle">✅</div>
-        <div class="step-label">Selesai</div>
-      </div>
-
-      <div class="step">
-        <div class="step-circle">📦</div>
-        <div class="step-label">Diantar</div>
-      </div>
-
-      <!-- Progress Bar -->
-      <div class="progress-bar"></div>
-
+<button id="btnLogoutStatus" style="margin-top: 20px; width: 100%; background: #ef4444; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">
+  Cari No HP Lain
+</button>
     </div>
+
   </div>
 </div>
 
+
+
 <style>
-  /* ================== STATUS PROGRESS ================== */
-  .status-progress {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    margin-top: 30px;
-    padding: 0 10px;
-  }
+/* ================== ORDER GRID & CARD ================== */
+.order-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  margin-top: 10px;
+}
 
-  .status-progress .step {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-    cursor: pointer;
-  }
+.order-item-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 15px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+  text-align: left;
+}
 
-  .status-progress .step-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #e2e8f0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
-    color: #fff;
-    margin-bottom: 6px;
-    transition: all 0.3s;
-  }
+.order-item-card:hover {
+  transform: translateY(-5px);
+}
 
-  .status-progress .step-label {
-    font-size: 0.6rem;
-    text-align: center;
-    color: #555;
-  }
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
 
-  .status-progress .step.active .step-circle {
-    background: linear-gradient(135deg, #facc15, #fbbf24);
-    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.5);
-  }
+.order-id {
+  font-weight: bold;
+  color: #3b82f6;
+  font-size: 0.9rem;
+}
 
-  .status-progress .progress-bar {
-    position: absolute;
-    top: 18px;
-    left: 0;
-    height: 4px;
-    background: linear-gradient(135deg, #facc15, #fbbf24);
-    border-radius: 2px;
-    z-index: 0;
-    width: 0%;
-    transition: width 0.5s ease-in-out;
-  }
+.order-status-badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
 
-  .status-progress .step.active::before {
-    opacity: 1;
-    animation: pulse 1s infinite alternate;
-  }
+/* Warna Status */
+.status-dipesan  { background: #dbeafe; color: #1e40af; }
+.status-diproses { background: #fef3c7; color: #92400e; }
+.status-selesai  { background: #d1fae5; color: #065f46; }
 
-  @keyframes pulse {
-    0%   { transform: translateX(-50%) scale(1); }
-    50%  { transform: translateX(-50%) scale(1.3); }
-    100% { transform: translateX(-50%) scale(1.1); }
-  }
+.order-body p {
+  margin: 5px 0;
+  font-size: 0.85rem;
+  color: #4b5563;
+  line-height: 1.4;
+}
+
+.order-body strong {
+  color: #1f2937;
+}
+
+/* Button Refresh Style */
+.btn-refresh {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: 0.3s;
+}
+
+.btn-refresh:hover { background: #059669; }
+
+.refresh-spin .refresh-icon {
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+/* ================== SPINNER LOADING ================== */
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin-loader 1s linear infinite;
+}
+
+@keyframes spin-loader {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Style tambahan untuk Jadwal Diantar */
+.order-body p strong {
+  display: inline-block;
+  width: 110px; /* Merapikan label agar sejajar */
+}
+
+.order-item-card img {
+  cursor: zoom-in;
+  transition: opacity 0.2s;
+}
+
+.order-item-card img:hover {
+  opacity: 0.8;
+}
+
 </style>
-
 
 
 
@@ -1038,24 +1008,57 @@
 
 
 
-<!-- ========== JS PESAN LAUNDRY ========== -->
+<!-- ========== JS PESAN LAUNDRY UPDATED ========== -->
 <script>
-  // ================= LocalStorage Auto-Save =================
+  // ================= Helpers (Fungsi Pembantu) =================
+  const getJamSekarang = () => {
+    const n = new Date();
+    return n.getHours().toString().padStart(2, '0') + ':' + 
+           n.getMinutes().toString().padStart(2, '0');
+  };
+
+  const getTanggalBesok = () => {
+    const n = new Date();
+    n.setDate(n.getDate() + 1);
+    return n.toISOString().split('T')[0];
+  };
+
   const fields = ['nama', 'alamat', 'nohp', 'layanan', 'jadwal', 'jam', 'catatan'];
 
+  // ================= Initialization =================
   window.addEventListener('DOMContentLoaded', () => {
+    // 1. Hapus jam lama agar selalu realtime saat reload
+    localStorage.removeItem('order_jam');
+
+    // 2. Interval Jam Realtime (update tiap detik)
+    const elJam = document.getElementById('jam');
+    setInterval(() => {
+      // Hanya update jika user tidak sedang fokus/mengedit manual
+      if (elJam && document.activeElement !== elJam) {
+        elJam.value = getJamSekarang();
+      }
+    }, 1000);
+
+    // 3. Load data dari LocalStorage atau set Default
     fields.forEach(id => {
       const el = document.getElementById(id);
+      if (!el) return;
+
       const saved = localStorage.getItem('order_' + id);
-
-      if (saved !== null) el.value = saved;
-
+      if (saved !== null && saved !== "" && id !== 'jam') {
+        el.value = saved;
+      } else {
+        if (id === 'jam') el.value = getJamSekarang();
+        if (id === 'jadwal') el.value = getTanggalBesok();
+      }
       el.dispatchEvent(new Event('input'));
     });
   });
 
+  // 4. Listener simpan otomatis (KECUALI JAM)
   fields.forEach(id => {
     const el = document.getElementById(id);
+    if (!el || id === 'jam') return; 
     el.addEventListener('input', () => {
       localStorage.setItem('order_' + id, el.value);
     });
@@ -1063,39 +1066,16 @@
 
   // ===== Format otomatis No HP =====
   const nohpInput = document.getElementById('nohp');
-
-  nohpInput.addEventListener('input', (e) => {
-    let val = e.target.value;
-
-    val = val.replace(/\D/g, ''); // Hapus semua kecuali angka
-
-    if (val.startsWith('0')) {
-      val = '+62' + val.slice(1);
-    } else if (val.startsWith('62')) {
-      val = '+62' + val.slice(2);
-    } else if (!val.startsWith('+62')) {
-      val = '+62' + val;
-    }
-
-    if (val.length > 15) val = val.slice(0, 15);
-
-    e.target.value = val;
-  });
-
-  // ================= Tombol "Reset" =================
-  document.getElementById('resetForm').addEventListener('click', function () {
-    if (confirm('Apakah kamu yakin ingin mereset semua inputan?')) {
-      document.getElementById('orderForm').reset();
-
-      // hapus localStorage
-      ['nama', 'alamat', 'nohp', 'jenis', 'berat', 'catatan'].forEach(id => {
-        localStorage.removeItem('order_' + id);
-      });
-
-      // isi default nomor HP jadi +62 lagi
-      document.getElementById('nohp').value = '+62';
-    }
-  });
+  if (nohpInput) {
+    nohpInput.addEventListener('input', (e) => {
+      let val = e.target.value.replace(/\D/g, ''); 
+      if (val.startsWith('0')) val = '+62' + val.slice(1);
+      else if (val.startsWith('62')) val = '+62' + val.slice(2);
+      else if (!val.startsWith('+62')) val = '+62' + val;
+      if (val.length > 15) val = val.slice(0, 15);
+      e.target.value = val;
+    });
+  }
 
   // ================= Tab & Animasi =================
   const tabs = document.querySelectorAll('.tab-btn');
@@ -1104,216 +1084,116 @@
 
   const showItems = (tabId) => {
     if (shownTabs[tabId]) return;
-
     shownTabs[tabId] = true;
-
-    const items = document
-      .getElementById(tabId)
-      .querySelectorAll('.item');
-
-    items.forEach((i, j) => {
+    const items = document.getElementById(tabId)?.querySelectorAll('.item');
+    items?.forEach((i, j) => {
       setTimeout(() => i.classList.add('show'), j * 100);
     });
   };
-
-  let statusLoaded = false;
 
   tabs.forEach(btn => {
     btn.addEventListener('click', () => {
       tabs.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-
       contents.forEach(c => c.classList.remove('active'));
-
       const tab = document.getElementById(btn.dataset.tab);
-      tab.classList.add('active');
-
+      if (tab) tab.classList.add('active');
       showItems(btn.dataset.tab);
-
-      if (btn.dataset.tab === 'status') {
+      if (btn.dataset.tab === 'status' && typeof loadStatusFromGAS === 'function') {
         loadStatusFromGAS();
-
-        const lastUpdate = new Date();
-        let p = tab.querySelector('.last-update');
-
-        if (!p) {
-          p = document.createElement('p');
-          p.classList.add('last-update');
-          p.style.fontSize = '0.6rem';
-          p.style.color = '#555';
-          p.style.marginTop = '10px';
-
-          tab.querySelector('.card').appendChild(p);
-        }
-
-        p.textContent =
-          'Terakhir diperbarui: ' + lastUpdate.toLocaleTimeString();
       }
     });
   });
 
   showItems('home');
 
-  // ================= Tombol "Pesan Sekarang" =================
-  document.querySelector('.cta-btn').addEventListener('click', e => {
-    e.preventDefault();
+  // ================= Navigation & UI =================
+  const ctaBtn = document.querySelector('.cta-btn');
+  if (ctaBtn) {
+    ctaBtn.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector('.tab-btn[data-tab="order"]')?.click();
+      setTimeout(() => {
+        const form = document.getElementById('orderForm');
+        form?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        form?.querySelector('input, select, textarea')?.focus();
+      }, 300);
+    });
+  }
 
-    const orderTabBtn = document.querySelector(
-      '.tab-btn[data-tab="order"]'
-    );
-
-    orderTabBtn.click();
-
-    setTimeout(() => {
-      const form = document.getElementById('orderForm');
-
-      if (form) {
-        form.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-
-        form
-          .querySelector('input, select, textarea')
-          ?.focus();
-      }
-    }, 300);
-  });
-
-  // ================= Apps Script Integration =================
-  const GAS_URL =
-    'https://script.google.com/macros/s/AKfycbzsRfuyn0JHI5IH5AHFwRMxa_5AxXlDBiWnzCX_dacxda2_miG1_vLSTPc5sUKO6AbSEw/exec';
-
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbw2UtzhgHJuneP_QHBzI22ZeF8nW-rEyYJqzt0DVgOFhT4aQdlStftdFycQ1InBprns8w/exec';
   const waBtn = document.getElementById('waChat');
-
-  waBtn.addEventListener('click', () => {
-    waBtn.style.transform = 'scale(1.1)';
-
-    setTimeout(() => {
-      waBtn.style.transform = '';
-    }, 200);
-
-    window.open('https://wa.me/6287877929391', '_blank');
-  });
+  if (waBtn) {
+    waBtn.addEventListener('click', () => {
+      window.open('https://wa.me/6287877929391', '_blank');
+    });
+  }
 
   function showToast(msg) {
     const toast = document.getElementById('toast');
-
+    if (!toast) return;
     toast.textContent = msg;
     toast.classList.add('show');
-    toast.style.opacity = 0;
-
-    setTimeout(() => (toast.style.opacity = 1), 50);
-
+    toast.style.opacity = 1;
     setTimeout(() => {
       toast.style.opacity = 0;
-
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 500);
+      setTimeout(() => toast.classList.remove('show'), 500);
     }, 3000);
   }
 
-  // ================= Form submit WA + GAS =================
-  document
-    .getElementById('orderForm')
-    .addEventListener('submit', e => {
-      e.preventDefault();
+  // ================= Form Submit =================
+  document.getElementById('orderForm').addEventListener('submit', e => {
+    e.preventDefault();
+    if (!confirm('Apakah Anda yakin ingin mengirim pesanan via WhatsApp?')) return;
 
-      if (
-        !confirm(
-          'Apakah Anda yakin ingin mengirim pesanan via WhatsApp?'
-        )
-      ) {
-        return;
-      }
+    const nama = document.getElementById('nama').value.trim();
+    const nohp = document.getElementById('nohp').value.trim();
+    const layanan = document.getElementById('layanan').value;
+    const catatan = document.getElementById('catatan').value.trim();
+    const tanggal = document.getElementById('jadwal').value;
+    const jam = document.getElementById('jam').value;
+    const alamat = document.getElementById('alamat').value.trim();
 
-      const nama = document.getElementById('nama').value.trim();
-      const nohp = document.getElementById('nohp').value.trim();
-      const layanan = document.getElementById('layanan').value;
-      const catatan = document.getElementById('catatan').value.trim();
-      const tanggal = document.getElementById('jadwal').value;
-      const jam = document.getElementById('jam').value;
-      const jadwal = tanggal + ' ' + jam;
-      const alamat = document.getElementById('alamat').value.trim();
+    const selectedDateTime = new Date(`${tanggal}T${jam}`);
+    if (selectedDateTime < new Date()) {
+      alert('Jadwal tidak boleh di masa lalu');
+      return;
+    }
 
-      const now = new Date();
-      const selectedDateTime = new Date(`${tanggal}T${jam}`);
+    const mapsLink = document.getElementById('alamat').dataset.maplink ||
+      'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(alamat);
 
-      if (selectedDateTime < now) {
-        alert('Jadwal tidak boleh di masa lalu');
-        return;
-      }
+    const waMessage = `*Halo, saya ingin memesan laundry :*\n\n• *Nama :* ${nama}\n• *No HP :* ${nohp}\n• *Layanan :* ${layanan}\n• *Catatan :* ${catatan}\n• *Jadwal Penjemputan:* ${tanggal} jam ${jam}\n• *Alamat :* ${alamat}\n• *Lihat di Maps :* ${mapsLink}`;
 
-      const mapsLink =
-        document.getElementById('alamat').dataset.maplink ||
-        'https://www.google.com/maps/search/?api=1&query=' +
-          encodeURIComponent(alamat);
+    window.open('https://wa.me/6287877929391?text=' + encodeURIComponent(waMessage), '_blank');
 
-      const waMessage = `*Halo, saya ingin memesan laundry :*\n\n• *Nama :* ${nama}\n• *No HP :* ${nohp}\n• *Layanan :* ${layanan}\n• *Catatan :* ${catatan}\n• *Jadwal Penjemputan:* ${tanggal} jam ${jam}\n• *Alamat :* ${alamat}\n• *Lihat di Maps :* ${mapsLink}\n\n*Kami akan segera menghubungi Anda untuk konfirmasi. Terima kasih!*`;
+    document.querySelector('.tab-btn[data-tab="status"]')?.click();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      window.open(
-        'https://wa.me/6287877929391?text=' +
-          encodeURIComponent(waMessage),
-        '_blank'
-      );
-
-      // Pindah ke tab Status Order
-      document
-        .querySelector('.tab-btn[data-tab="status"]')
-        .click();
-
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-
-      fetch(GAS_URL, {
-        method: 'POST',
-        body: JSON.stringify({
-          type: 'PesanLaundry',
-          payload: {
-            nama,
-            nohp,
-            layanan,
-            catatan,
-            jadwal,
-            alamat
-          }
-        })
+    fetch(GAS_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        type: 'PesanLaundry',
+        payload: { nama, nohp, layanan, catatan, jadwal: tanggal + ' ' + jam, alamat }
       })
-        .then(() => {
-          showToast('Pesanan berhasil dikirim!');
+    })
+    .then(() => {
+      showToast('Pesanan berhasil dikirim!');
+      fields.forEach(id => localStorage.removeItem('order_' + id));
+      document.getElementById('orderForm').reset();
+      
+      // Update jam & tanggal ke waktu terbaru setelah reset
+      document.getElementById('jam').value = getJamSekarang();
+      document.getElementById('jadwal').value = getTanggalBesok();
 
-          fields.forEach(id =>
-            localStorage.removeItem('order_' + id)
-          );
-
-          document.getElementById('orderForm').reset();
-
-          if (userMarker) map.removeLayer(userMarker);
-          userMarker = null;
-
-          if (rutePolyline) map.removeLayer(rutePolyline);
-          rutePolyline = null;
-
-          document.getElementById('route-info').textContent =
-            'Jarak: -- km | Perkiraan Waktu: -- menit';
-
-          map.setView([laundryLat, laundryLon], 13);
-        })
-        .catch(err => {
-          console.error(
-            'Gagal mengirim ke Spreadsheet:',
-            err
-          );
-
-          alert(
-            'Terjadi masalah saat menyimpan ke Spreadsheet'
-          );
-        });
-    });
+      if (typeof userMarker !== 'undefined' && userMarker) map.removeLayer(userMarker);
+      if (typeof rutePolyline !== 'undefined' && rutePolyline) map.removeLayer(rutePolyline);
+      document.getElementById('route-info').textContent = 'Jarak: -- km | Perkiraan Waktu: -- menit';
+    })
+    .catch(err => alert('Terjadi masalah saat menyimpan data.'));
+  });
 </script>
+
 
 
 
@@ -1512,207 +1392,210 @@
 
 
 
-<!-- ========== JS STATUS ORDER ========== -->
+<!-- ========== JS STATUS ORDER COMPLETE UPDATED ========== -->
 <script>
-  // ================= Status Order =================
-  function updateProgressBar(lastStatus) {
-    const bar = document.querySelector('#statusSteps .progress-bar');
-    if (!bar) return;
-
-    const order = ["Dipesan", "Dijemput", "Diproses", "Selesai", "Diantar"];
-    const index = order.indexOf(lastStatus);
-    const percent = ((index + 1) / order.length) * 100;
-
-    bar.style.transition = 'width 0.5s ease-in-out';
-    bar.style.width = percent + '%';
-  }
-
-  function updateStatusSteps(lastStatus) {
-    const steps = document.querySelectorAll('#statusSteps .step');
-    const order = ["Dipesan", "Dijemput", "Diproses", "Selesai", "Diantar"];
-
-    steps.forEach((step, i) => {
-      if (i <= order.indexOf(lastStatus)) {
-        step.classList.add('active');
-      } else {
-        step.classList.remove('active');
-      }
-    });
-
-    updateProgressBar(lastStatus);
-  }
-
-  function loadStatusFromGAS() {
-    fetch(GAS_URL, {
-      method: "POST",
-      body: JSON.stringify({ type: "GetAllStatus" })
-    })
-      .then(res => res.json())
-      .then(data => {
-        const lastStatus =
-          (data.status.length > 0)
-            ? data.status[data.status.length - 1]
-            : (localStorage.getItem('lastStatus') || "Dipesan");
-
-        localStorage.setItem('lastStatus', lastStatus);
-        updateStatusSteps(lastStatus);
-      })
-      .catch(err => {
-        console.error("Gagal ambil status:", err);
-
-        const lastStatus =
-          localStorage.getItem('lastStatus') || "Dipesan";
-
-        updateStatusSteps(lastStatus);
-      });
-  }
-
-  // ================= Load Tab Terakhir =================
+// 1. NAVIGASI TAB (Mencegah alert otomatis saat pindah tab)
+if (typeof tabs !== 'undefined') {
   tabs.forEach(btn => {
-    btn.addEventListener('click', () => {
-      localStorage.setItem('lastActiveTab', btn.dataset.tab);
-    });
-  });
+    btn.addEventListener('click', function(e) {
+      const tabId = this.dataset.tab;
 
-  window.addEventListener('DOMContentLoaded', () => {
-    const lastTab = localStorage.getItem('lastActiveTab');
+      // Reset visual tab
+      tabs.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
 
-    if (lastTab) {
-      const btn = document.querySelector(`.tab-btn[data-tab="${lastTab}"]`);
-      if (btn) btn.click();
-    } else {
-      document.querySelector('.tab-btn.active').click();
-    }
-  });
+      contents.forEach(c => c.classList.remove('active'));
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) targetTab.classList.add('active');
 
-  // ================= Accordion =================
-  document.querySelectorAll('.accordion-header').forEach(header => {
-    header.addEventListener('click', () => {
-      const content = header.nextElementSibling;
-      const isActive = header.classList.contains('active');
-
-      document.querySelectorAll('.accordion-header')
-        .forEach(h => h.classList.remove('active'));
-
-      document.querySelectorAll('.accordion-content')
-        .forEach(c => c.style.maxHeight = null);
-
-      if (!isActive) {
-        header.classList.add('active');
-        content.style.maxHeight = content.scrollHeight + "px";
-      }
-    });
-  });
-
-  window.addEventListener('resize', () => {
-    document.querySelectorAll('.accordion-header.active')
-      .forEach(header => {
-        const content = header.nextElementSibling;
-        content.style.maxHeight = content.scrollHeight + "px";
-      });
-  });
-
-  // ====== SIMPAN + TAMPILKAN PESANAN ======
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.getElementById("orderForm");
-    const resetBtn = document.getElementById("resetForm");
-    const detailContainer = document.getElementById("detailPesanan");
-
-    function tampilkanPesanan(pesanan) {
-      detailContainer.innerHTML = "";
-
-      const heading = document.createElement("h3");
-      heading.textContent = "Detail Pesanan Terakhir";
-      detailContainer.appendChild(heading);
-
-      const fields = [
-        ["Nama", pesanan.nama],
-        ["No. HP", pesanan.nohp],
-        ["Alamat", pesanan.alamat],
-        ["Layanan", pesanan.layanan],
-        ["Jadwal Jemput", pesanan.jadwal],
-        ["Jam Jemput", pesanan.jam],
-        ["Catatan", pesanan.catatan || "Tidak ada"]
-      ];
-
-      fields.forEach(([label, value]) => {
-        const p = document.createElement("p");
-        p.innerHTML = `<b>${label}:</b> ${value}`;
-        detailContainer.appendChild(p);
-      });
-    }
-
-    if (form) {
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const pesanan = {
-          nama: document.getElementById("nama").value.trim(),
-          nohp: document.getElementById("nohp").value.trim(),
-          alamat: document.getElementById("alamat").value.trim(),
-          layanan: document.getElementById("layanan").value,
-          jadwal: document.getElementById("jadwal").value,
-          jam: document.getElementById("jam").value,
-          catatan: document.getElementById("catatan").value.trim()
-        };
-
-        if (
-          !pesanan.nama ||
-          !pesanan.nohp ||
-          !pesanan.alamat ||
-          !pesanan.layanan ||
-          !pesanan.jadwal ||
-          !pesanan.jam
-        ) {
-          alert("Harap isi semua field wajib!");
-          return;
+      // RESET TAMPILAN TAB STATUS
+      if (tabId === 'status') {
+        e.stopImmediatePropagation(); 
+        
+        const authArea = document.getElementById('authStatus');
+        const resultArea = document.getElementById('statusResult');
+        const container = document.getElementById('orderGrid');
+        const searchInput = document.getElementById('searchNoHP');
+        
+        if (authArea) authArea.style.display = 'block';
+        if (resultArea) resultArea.style.display = 'none';
+        if (container) container.innerHTML = '';
+        
+        // Pastikan input No HP di status terisi +62 saat tab dibuka
+        if (searchInput && (searchInput.value === '' || searchInput.value === ' ')) {
+          searchInput.value = '+62';
         }
+      }
 
-        localStorage.setItem("pesananTerakhir", JSON.stringify(pesanan));
-        tampilkanPesanan(pesanan);
-        form.reset();
-      });
-    }
+      if (typeof showItems === 'function') showItems(tabId);
+    }, true); 
+  });
+}
 
-    if (resetBtn) {
-      resetBtn.addEventListener("click", () => {
-        form.reset();
-        localStorage.removeItem("pesananTerakhir");
-        detailContainer.innerHTML = "<p>Belum ada pesanan.</p>";
-      });
-    }
+// ===== FORMAT OTOMATIS NO HP STATUS ORDER =====
+const searchInputStatus = document.getElementById('searchNoHP');
 
-    const data = localStorage.getItem("pesananTerakhir");
-    if (data) {
-      tampilkanPesanan(JSON.parse(data));
-    }
+if (searchInputStatus) {
+  window.addEventListener('DOMContentLoaded', () => {
+    if (!searchInputStatus.value) searchInputStatus.value = '+62';
   });
 
-  const pakaiBtn = document.getElementById("pakaiTerakhir");
+  searchInputStatus.addEventListener('input', (e) => {
+    let val = e.target.value;
+    val = val.replace(/\D/g, ''); 
 
-  if (pakaiBtn) {
-    pakaiBtn.addEventListener("click", () => {
-      const data = localStorage.getItem("pesananTerakhir");
+    if (val.startsWith('0')) {
+      val = '+62' + val.slice(1);
+    } else if (val.startsWith('62')) {
+      val = '+62' + val.slice(2);
+    } else if (!val.startsWith('+62')) {
+      val = '+62' + val;
+    }
 
-      if (!data) {
-        alert("Belum ada pesanan terakhir yang tersimpan.");
-        return;
-      }
+    if (val.length > 15) val = val.slice(0, 15);
+    e.target.value = val;
+  });
+}
 
-      if (confirm("Apakah Anda yakin ingin mengisi form dengan pesanan terakhir?")) {
-        const pesanan = JSON.parse(data);
+// 2. FUNGSI LOAD STATUS (Pencarian & Spinner)
+async function loadStatusFromGAS() {
+  const container = document.getElementById('orderGrid');
+  const inputNoHP = document.getElementById('searchNoHP').value.trim();
+  const authArea = document.getElementById('authStatus');
+  const resultArea = document.getElementById('statusResult');
 
-        document.getElementById("nama").value = pesanan.nama || "";
-        document.getElementById("nohp").value = pesanan.nohp || "";
-        document.getElementById("alamat").value = pesanan.alamat || "";
-        document.getElementById("layanan").value = pesanan.layanan || "";
-        document.getElementById("jadwal").value = pesanan.jadwal || "";
-        document.getElementById("jam").value = pesanan.jam || "";
-        document.getElementById("catatan").value = pesanan.catatan || "";
-      }
-    });
+  if (!inputNoHP || inputNoHP === '+62') {
+    alert("Silakan masukkan nomor HP Anda terlebih dahulu.");
+    return;
   }
+
+  container.innerHTML = `
+    <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
+      <div class="spinner"></div>
+      <p style="margin-top: 15px; color: #666; font-weight: 500;">Mencari data pesanan...</p>
+    </div>
+  `;
+
+  authArea.style.display = 'none';
+  resultArea.style.display = 'block';
+
+  try {
+    const response = await fetch(GAS_URL + '?action=getOrders');
+    const data = await response.json();
+
+    const cleanSearch = inputNoHP.replace(/\D/g, '');
+    const filteredData = data.filter(order => {
+      const cleanDB = String(order.nohp).replace(/\D/g, '');
+      return cleanDB === cleanSearch;
+    });
+
+    if (filteredData.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; grid-column: 1/-1; padding: 40px 20px;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🔍</div>
+          <p style="color: #ef4444; font-weight: bold; font-size: 1.1rem; margin: 0;">Pesanan tidak ditemukan</p>
+          <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">Data untuk nomor ${inputNoHP} belum ada.</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = '';
+    
+    // --- FUNGSI PEMBANTU FORMAT TANGGAL ---
+    const formatTglCustom = (tglRaw) => {
+      if (!tglRaw || tglRaw === "-" || tglRaw === "") return "Menunggu update";
+      try {
+        const d = new Date(tglRaw);
+        if (isNaN(d.getTime())) return tglRaw;
+        const tgl = String(d.getDate()).padStart(2, '0');
+        const bln = String(d.getMonth() + 1).padStart(2, '0');
+        const thn = d.getFullYear();
+        const jam = String(d.getHours()).padStart(2, '0');
+        const mnt = String(d.getMinutes()).padStart(2, '0');
+        return `${tgl}/${bln}/${thn} jam ${jam}:${mnt}`;
+      } catch (e) { return tglRaw; }
+    };
+
+    filteredData.reverse().forEach(order => { 
+      const card = document.createElement('div');
+      card.className = 'order-item-card';
+      
+      const jadwalJemput = formatTglCustom(order.jadwal);
+      const jadwalAntar = formatTglCustom(order.jadwalDiantar);
+
+      // --- TAMPILAN LINK FOTO (IKON LINK) ---
+      let fotoHtml = "";
+      if (order.foto && order.foto.startsWith("http")) {
+        fotoHtml = `
+          <div style="margin-top:12px; padding-top:12px; border-top:1px dashed #e2e8f0;">
+            <a href="${order.foto}" target="_blank" style="text-decoration:none; color:#1e40af; font-size:0.85rem; display:flex; align-items:center; gap:8px; font-weight:bold; background:#eff6ff; padding:8px; border-radius:6px; border:1px solid #bfdbfe;">
+              🔗 Lihat Foto Timbangan
+            </a>
+          </div>`;
+      }
+
+      const s = (order.status || 'Dipesan').toLowerCase();
+      let statusClass = 'status-dipesan';
+      if (s.includes('proses')) statusClass = 'status-diproses';
+      if (s.includes('selesai') || s.includes('antar')) statusClass = 'status-selesai';
+
+      card.innerHTML = `
+        <div class="order-header">
+          <span class="order-id">#ORD-${order.id}</span>
+          <span class="order-status-badge ${statusClass}">${order.status}</span>
+        </div>
+        <div class="order-body">
+          <p><strong>👤 Pelanggan:</strong> ${order.nama}</p>
+          <p><strong>🧺 Layanan:</strong> ${order.layanan}</p>
+          <p><strong>📅 Jadwal:</strong> ${jadwalJemput}</p>
+          <p><strong>🏠 Alamat:</strong> ${order.alamat}</p>
+          ${order.berat && order.berat !== '-' ? `<p><strong>⚖️ Berat:</strong> ${order.berat} kg</p>` : ''}
+          ${order.harga && order.harga !== '-' ? `<p><strong>💰 Total:</strong> Rp ${order.harga}</p>` : ''}
+          <p style="color: #059669; font-weight: bold; margin-top: 8px;">
+            <strong>🚚 Diantar:</strong> ${jadwalAntar}
+          </p>
+          ${fotoHtml}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error('Fetch error:', error);
+    container.innerHTML = '<p style="text-align:center; color:red; grid-column: 1/-1;">Gagal mengambil data terbaru.</p>';
+  }
+}
+
+// 3. EVENT LISTENERS TOMBOL
+document.getElementById('btnCekStatus').onclick = loadStatusFromGAS;
+
+const refreshBtn = document.getElementById('btnRefreshStatus');
+if (refreshBtn) {
+  refreshBtn.onclick = function() {
+    this.classList.add('refresh-spin');
+    this.disabled = true;
+    loadStatusFromGAS().finally(() => {
+      setTimeout(() => {
+        this.classList.remove('refresh-spin');
+        this.disabled = false;
+      }, 800);
+    });
+  };
+}
+
+document.getElementById('btnLogoutStatus').onclick = () => {
+    document.getElementById('authStatus').style.display = 'block';
+    document.getElementById('statusResult').style.display = 'none';
+    document.getElementById('searchNoHP').value = '+62'; 
+    document.getElementById('orderGrid').innerHTML = '';
+};
 </script>
+
+
+
+
+
+
 
 
 
