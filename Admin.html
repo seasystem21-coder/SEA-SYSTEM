@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Sea Laundry Admin</title>
+
+<!-- jsPDF dan autoTable CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<!-- PDF.js CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<style>
+  body{font-family:Arial,Helvetica,sans-serif;background:#f4f4f4;margin:0;padding:0}
+  header{background:#1f2937;color:#fff;padding:14px 16px;text-align:center}
+  .container{padding:18px;max-width:1200px;margin:0 auto}
+  button{padding:7px 12px;border-radius:6px;border:0;background:#2563eb;color:#fff;cursor:pointer}
+  button:hover{background:#1e40af}
+  input,select,textarea{padding:8px;border:1px solid #ccc;border-radius:6px;font-size:14px;width:100%;box-sizing:border-box}
+  textarea{min-height:60px}
+  #dashboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px}
+  .card-summary{background:#fff;border-radius:10px;padding:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);text-align:center;transition:0.2s}
+  .card-summary h3{margin:0;font-size:13px;color:#374151}
+  .card-summary p{margin:6px 0 0;font-weight:700;font-size:18px}
+  .card-summary:hover{transform: translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+  #newOrdersBox{background:#eff6ff;border:2px solid #2563eb;padding:10px;border-radius:8px;margin-bottom:12px;position:relative;transition:0.3s}
+  #newOrdersBox h3{margin:0 0 8px;color:#1e40af;font-size:15px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  #newOrdersBox h3::after{content:'▼';font-size:12px;margin-left:8px;transition:transform 0.3s;}
+  #newOrdersBox.collapsed h3::after{transform:rotate(-90deg);}
+  #newOrdersBox.collapsed ul{display:none;}
+  #newOrdersList{list-style:none;padding:0;margin:0}
+  .filter-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:14px}
+  #ordersGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+  .order-card{background:#fff;padding:12px;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,0.08);transition:0.2s}
+  .order-card:hover{transform: translateY(-3px); box-shadow:0 4px 12px rgba(0,0,0,0.15);}
+  .order-card h4{margin:0 0 6px;color:#111827}
+  .order-card p{margin:4px 0;color:#374151;font-size:14px}
+  .status{display:inline-block;padding:4px 8px;border-radius:8px;font-weight:700;font-size:12px;margin-top:8px}
+  .status.Dipesan{background:#fee2e2;color:#991b1b}
+  .status.Dijemput{background:#dbeafe;color:#1e3a8a}
+  .status.Diproses{background:#fef9c3;color:#92400e}
+  .status.Selesai{background:#dcfce7;color:#166534}
+  .status.Diantar{background:#d1fae5;color:#065f46}
+  .order-card.diantar { background-color: #d1fae5; }
+  .order-card button{width:100%;margin-top:10px}
+  .order-card.highlight { box-shadow:0 0 12px 3px #2563eb; transition: box-shadow 0.3s; }
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center}
+  .modal .box{background:#fff;border-radius:10px;padding:16px;width:94%;max-width:520px;max-height:90vh;overflow:auto; display:flex; flex-direction: column;}
+  .modal h3{margin:0 0 10px}
+  .modal .form-row{margin-bottom:8px}
+  #orderModal .box div[style*="justify-content:flex-end"] button{min-width:100px}
+  .toast{position:fixed;top:16px;right:16px;padding:12px 18px;border-radius:8px;color:#fff;font-weight:700;display:none;z-index:11000;transform:none}
+  .toast.success{background:#16a34a}
+  .toast.error{background:#dc2626}
+  .loading-overlay {display: none;position: fixed;inset: 0;background: rgba(0,0,0,0.4);z-index: 12000;align-items: center;justify-content: center;flex-direction: column;color: #fff;font-weight: 600;font-size: 16px;}
+  .spinner {width: 40px;height: 40px;border: 4px solid #fff;border-top: 4px solid #2563eb;border-radius: 50%;animation: spin 1s linear infinite;margin-bottom: 12px;}
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #reportPages canvas { margin:0 auto 12px;display:block;max-width:100%;border:1px solid #ddd;border-radius:6px; }
+
+  /* --- STYLE BARU UNTUK FOTO --- */
+  .upload-container {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 10px 0;
+  }
+  .file-input-label {
+    display: block;
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: #1e40af;
+  }
+  .img-preview-admin {
+    width: 100%;
+    max-height: 180px; /* Ukuran pas di modal */
+    object-fit: contain;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    display: none;
+  }
+  /* ----------------------------- */
+
+  @media (max-width:640px){
+    .filter-bar{flex-direction:column;align-items:stretch}
+    #dashboard{grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px;}
+    #ordersGrid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;}
+  }
+
+  .report-controls-smart {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 12px;
+    align-items: center;
+    text-align: center;
+  }
+  .page-info { font-weight: bold; font-size: 15px; }
+  .control-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .control-row button, .control-row select {
+    padding: 6px 12px;
+    font-size: 14px;
+    min-width: 100px;
+    text-align: center;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  @media (max-width: 640px) {
+    .control-row { width: 100%; justify-content: space-between; }
+    .control-row button, .control-row select { flex: 1; min-width: auto; }
+  }
+</style>
+
+</head>
+<body>
+
+<header><h1 style="margin:0">Admin Panel - Sea Laundry</h1></header>
+<div class="container">
+  <div id="notif" class="toast"></div>
+  <div id="dashboard">
+    <div class="card-summary" style="background:#bfdbfe"><h3>Jumlah Pemesan</h3><p id="totalOrders">0</p></div>
+    <div class="card-summary" style="background:#bbf7d0"><h3>Total Berat (Kg)</h3><p id="totalWeight">0 Kg</p></div>
+    <div class="card-summary" style="background:#fef08a"><h3>Total Pemasukan</h3><p id="totalIncome">Rp 0</p></div>
+    <div class="card-summary" style="background:#ddd6fe"><h3>Order Aktif</h3><p id="activeOrders">0</p></div>
+    <div class="card-summary" style="background:#e5e7eb"><h3>Order Selesai</h3><p id="completedOrders">0</p></div>
+  </div>
+  <div id="newOrdersBox">
+    <h3>📢 Pesanan Baru</h3>
+    <ul id="newOrdersList"></ul>
+  </div>
+  <div class="filter-bar">
+    <input id="searchInput" placeholder="🔍 Cari nama / HP / layanan" />
+    <select id="statusFilter">
+      <option value="">Semua Status</option>
+      <option value="Dipesan">Dipesan</option>
+      <option value="Dijemput">Dijemput</option>
+      <option value="Diproses">Diproses</option>
+      <option value="Selesai">Selesai</option>
+      <option value="Diantar">Diantar</option>
+    </select>
+    <button id="refreshBtn" onclick="confirmRefresh()">🔄 Refresh Orders</button>
+    <button id="reportBtn">📄 Preview Report</button>
+  </div>
+  <div id="ordersGrid"></div>
+</div>
+
+<!-- MODAL DETAIL ORDER -->
+<div id="orderModal" class="modal" aria-hidden="true">
+  <div class="box">
+    <h3>Detail & Update Order</h3>
+    <div id="modalContent"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+      <button id="modalSaveBtn">💾 Simpan</button>
+      <button id="modalCloseBtn">❌ Tutup</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL PREVIEW REPORT (update pakai pdf.js) -->
+<div id="reportModal" class="modal" aria-hidden="true">
+  <div class="box" style="width:98%;max-width:none;height:95vh;">
+    <h3>Preview Laporan Orders</h3>
+
+    <!-- Tempat render PDF -->
+    <div id="reportPages" style="flex:1;overflow:auto;height:80%;border:1px solid #ccc;padding:6px"></div>
+
+    <!-- Kontrol laporan -->
+    <div class="report-controls-smart">
+      <!-- Info halaman di atas -->
+      <div class="page-info">
+        <span id="pageInfo">Halaman 1 / 1</span>
+      </div>
+
+      <!-- Baris filter -->
+      <div class="control-row">
+        <select id="reportStatusFilter">
+          <option value="">Semua Status</option>
+          <option value="Dipesan">Dipesan</option>
+          <option value="Dijemput">Dijemput</option>
+          <option value="Diproses">Diproses</option>
+          <option value="Selesai">Selesai</option>
+          <option value="Diantar">Diantar</option>
+        </select>
+        <button id="applyReportFilter">🔍 Filter</button>
+      </div>
+
+      <!-- Baris zoom -->
+      <div class="control-row">
+        <button id="zoomOutBtn">🔍➖</button>
+        <button id="zoomInBtn">🔍➕</button>
+        <button id="fitWidthBtn">↔️ Fit</button>
+      </div>
+
+      <!-- Baris navigasi -->
+      <div class="control-row">
+        <button id="prevPageBtn">⬅️ Prev</button>
+        <button id="nextPageBtn">➡️ Next</button>
+      </div>
+
+      <!-- Baris aksi -->
+      <div class="control-row">
+        <button id="downloadReportBtn">⬇️ Download</button>
+        <button id="closeReportModalBtn">❌ Tutup</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="spinner"></div>
+  <p>Sedang memuat data...</p>
+</div>
+
+<script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbw2UtzhgHJuneP_QHBzI22ZeF8nW-rEyYJqzt0DVgOFhT4aQdlStftdFycQ1InBprns8w/exec";
+const statusOptions = ["Dipesan","Dijemput","Diproses","Selesai","Diantar"];
+let currentData = [];
+let seenOrders = new Set(JSON.parse(localStorage.getItem("seenOrders")||"[]"));
+let selectedRowIndex = null;
+
+// ======= UTILITY =======
+function saveSeenOrders(){ localStorage.setItem("seenOrders", JSON.stringify([...seenOrders])); }
+function showNotif(msg, type="success"){ 
+  const n=document.getElementById("notif"); 
+  n.textContent=msg; n.className="toast "+(type==="success"?"success":"error"); n.style.display="block"; 
+  setTimeout(()=>n.style.display="none",3000); 
+}
+function showLoading(){ document.getElementById("loadingOverlay").style.display = "flex"; document.getElementById("refreshBtn").disabled = true; }
+function hideLoading(){ document.getElementById("loadingOverlay").style.display = "none"; document.getElementById("refreshBtn").disabled = false; }
+
+// ======= LOAD ORDERS =======
+function loadOrders(){
+  showLoading();
+  fetch(GAS_URL, { method:"POST", body: JSON.stringify({ type:"GetAllOrders" }) })
+    .then(r => r.json())
+    .then(resp => {
+      const orders = (resp.orders||[]).map((o,i) => ({
+        ...o,
+        rowIndex: o.rowIndex !== undefined ? o.rowIndex : (i+2)
+      }));
+      currentData = orders;
+
+      renderCards(currentData);       // render grid
+      updateDashboard(currentData);   // update summary
+
+      // Reset seenOrders hanya untuk rowIndex yang masih valid
+      const validIds = new Set(currentData.map(o => String(o.rowIndex)));
+      seenOrders = new Set([...seenOrders].filter(id => validIds.has(id)));
+      saveSeenOrders();
+
+      highlightNewOrders(currentData); // update Pesanan Baru
+    })
+    .catch(err => { console.error(err); showNotif("⚠️ Gagal load order","error"); })
+    .finally(()=> hideLoading());
+}
+
+// ======= RENDER CARDS =======
+function renderCards(data){
+  const grid = document.getElementById("ordersGrid");
+  grid.innerHTML = "";
+  if(!data.length){ 
+    grid.innerHTML="<p style='text-align:center;color:#666'>Tidak ada order</p>"; 
+    return; 
+  }
+
+  const now = new Date();
+  data.forEach(o => {
+    const harga = (parseInt(o.Harga)||0).toLocaleString("id-ID");
+    const berat = o.Berat || 0;
+
+    let jadwalText = o.Jadwal || "-";
+    let jadwalDate = o.Jadwal ? new Date(o.Jadwal) : null;
+    if(jadwalDate){
+      const pad = n => n.toString().padStart(2,'0');
+      jadwalText = `${pad(jadwalDate.getDate())}/${pad(jadwalDate.getMonth()+1)}/${pad(jadwalDate.getFullYear())} ${pad(jadwalDate.getHours())}:${pad(jadwalDate.getMinutes())}`;
+    }
+
+    const card = document.createElement("div");
+    card.className = "order-card" + (o.Status==="Diantar"?" diantar":"");
+    card.setAttribute("data-rowindex", o.rowIndex); // ✅ tambah ini
+    if(jadwalDate && jadwalDate<now && !["Selesai","Diantar"].includes(o.Status)) card.style.backgroundColor="#fee2e2";
+
+    card.innerHTML = `
+      <h4>${escapeHtml(o.Nama||"Tanpa Nama")}</h4>
+      <p>📞 ${escapeHtml(o["No HP"]||"-")}</p>
+      <p>📍 ${escapeHtml(o.Alamat||"-")}</p>
+      <p>🛠 ${escapeHtml(o.Layanan||"-")}</p>
+      <p>⏰ ${escapeHtml(jadwalText)}</p>
+      <p><span class="status ${o.Status}">${o.Status}</span></p>
+      <p>⚖️ ${berat} Kg | 💰 Rp ${harga}</p>
+      <button onclick="openModalByRow(${o.rowIndex})">Detail / Update</button>
+      <button onclick="deleteOrder(${o.rowIndex})" style="background:#dc2626;margin-top:6px">Hapus</button>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+// ======= HIGHLIGHT & NOTIF PESANAN BARU =======
+function highlightNewOrders(data){
+  const list = document.getElementById("newOrdersList");
+  list.innerHTML = "";
+
+  const pending = data.filter(o => o.Status === "Dipesan");
+  const unseen = pending.filter(o => !seenOrders.has(String(o.rowIndex)));
+
+  if(unseen.length){
+    unseen.forEach(o=>{
+      const li = document.createElement("li");
+      li.innerHTML = `<b>${escapeHtml(o.Nama||"Tanpa Nama")}</b> - ${escapeHtml(o.Layanan||"")}
+        <button onclick="scrollToCard(${o.rowIndex})" style="margin-left:6px;padding:4px 8px">Lihat</button>`;
+      list.appendChild(li);
+    });
+  } else {
+    const li = document.createElement("li");
+    li.textContent = "Tidak ada order baru";
+    li.style.fontStyle = "italic";
+    li.style.color = "#555";
+    list.appendChild(li);
+  }
+}
+
+function scrollToCard(rowIndex){
+  const card = document.querySelector(`#ordersGrid .order-card[data-rowindex='${rowIndex}']`);
+  if(card){
+    card.scrollIntoView({behavior:'smooth',block:'center'});
+    card.classList.add('highlight');
+    setTimeout(()=>card.classList.remove('highlight'),2000);
+  }
+
+  // ✅ tandai order ini sudah dilihat
+  seenOrders.add(String(rowIndex));
+  saveSeenOrders();
+  highlightNewOrders(currentData);
+}
+
+
+
+
+// ======= MODAL DETAIL =======
+function openModalByRow(rowIndex){ const order=currentData.find(o=>String(o.rowIndex)===String(rowIndex)); if(order) openModal(order);}
+
+function openModal(order){
+  selectedRowIndex=order.rowIndex;
+  const cont=document.getElementById("modalContent");
+  
+  const formatDT = (dateStr) => {
+    if(!dateStr || dateStr === "-") return ""; 
+    const jd=new Date(dateStr);
+    if(isNaN(jd.getTime())) return "";
+    const pad=n=>n.toString().padStart(2,'0');
+    return `${jd.getFullYear()}-${pad(jd.getMonth()+1)}-${pad(jd.getDate())}T${pad(jd.getHours())}:${pad(jd.getMinutes())}`;
+  };
+
+  cont.innerHTML=`
+    <div class="form-row"><label>Nama</label><input id="m_Nama" value="${escapeHtml(order.Nama||"")}"></div>
+    <div class="form-row"><label>Alamat</label><textarea id="m_Alamat">${escapeHtml(order.Alamat||"")}</textarea></div>
+    <div class="form-row"><label>No HP</label><input id="m_NoHP" value="${escapeHtml(order["No HP"]||"")}"></div>
+    <div class="form-row"><label>Layanan</label><input id="m_Layanan" value="${escapeHtml(order.Layanan||"")}"></div>
+    <div class="form-row"><label>Catatan</label><textarea id="m_Catatan">${escapeHtml(order.Catatan||"")}</textarea></div>
+    <div class="form-row"><label>Jadwal Jemput</label><input id="m_Jadwal" type="datetime-local" value="${formatDT(order.Jadwal)}"></div>
+    <div class="form-row"><label>Status</label>
+      <select id="m_Status">${statusOptions.map(s=>`<option value="${s}" ${order.Status===s?'selected':''}>${s}</option>`).join("")}</select>
+    </div>
+    
+    <hr style="margin:15px 0; border:0; border-top:1px solid #eee;">
+
+    <div class="upload-container">
+      <label class="file-input-label">📸 Foto Berat Timbangan</label>
+      <input type="file" id="m_Foto" accept="image/*" capture="environment">
+      <div class="img-preview-container" style="margin-top:10px">
+        <!-- Preview Gambar dengan deteksi error -->
+        <img id="weightPhotoPreview" class="img-preview-admin" 
+             src="${order.Foto && order.Foto !== '-' ? order.Foto : '#'}" 
+             style="${order.Foto && order.Foto !== '-' ? 'display:block' : 'none'}"
+             onerror="this.style.display='none'; document.getElementById('linkIconFallback').style.display='block';">
+        
+        <!-- Tombol Link jika gambar tidak terbaca -->
+        <div id="linkIconFallback" style="display:none; text-align:center; padding:10px;">
+          <a href="${order.Foto}" target="_blank" style="text-decoration:none; color:#2563eb; font-weight:bold; font-size:14px; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <span>🔗</span> Buka Link Foto
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row"><label>Berat (Kg)</label><input id="m_Berat" type="number" step="0.1" value="${order.Berat && order.Berat !== '-' ? order.Berat : 0}"></div>
+    <div class="form-row"><label>Harga (Rp)</label><input id="m_Harga" type="number" value="${order.Harga && order.Harga !== '-' ? order.Harga : 0}"></div>
+    <div class="form-row"><label>Jadwal Diantar</label>
+      <input id="m_JadwalDiantar" type="datetime-local" value="${formatDT(order.JadwalDiantar)}">
+    </div>
+
+    <div class="form-row" style="margin-top:10px"><a href="${order.Maps||'#'}" target="_blank">📍 Lihat Maps</a></div>
+  `;
+
+  document.getElementById('m_Foto').onchange = function(evt) {
+    const [file] = this.files;
+    if (file) {
+      const preview = document.getElementById('weightPhotoPreview');
+      const fallback = document.getElementById('linkIconFallback');
+      preview.src = URL.createObjectURL(file);
+      preview.style.display = 'block';
+      fallback.style.display = 'none'; // Sembunyikan link saat upload foto baru
+    }
+  };
+
+  document.getElementById("orderModal").style.display="flex";
+}
+
+document.getElementById("modalCloseBtn").addEventListener("click",()=>{document.getElementById("orderModal").style.display="none";selectedRowIndex=null});
+
+document.getElementById("modalSaveBtn").addEventListener("click", async () => {
+  if(selectedRowIndex===null){ showNotif("Tidak ada order terpilih","error"); return; }
+  if(!confirm("Yakin update data ini?")) return;
+
+  const fileInput = document.getElementById("m_Foto");
+  let fileData = null;
+
+  if (fileInput.files.length > 0) {
+    const file = fileInput.files[0];
+    const base64 = await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]); 
+      reader.readAsDataURL(file);
+    });
+    fileData = { base64: base64, type: file.type, name: file.name };
+  }
+
+  const payload={
+    "Nama":(document.getElementById("m_Nama")?.value||"").trim(),
+    "Alamat":(document.getElementById("m_Alamat")?.value||"").trim(),
+    "No HP":(document.getElementById("m_NoHP")?.value||"").trim(),
+    "Layanan":(document.getElementById("m_Layanan")?.value||"").trim(),
+    "Catatan":(document.getElementById("m_Catatan")?.value||"").trim(),
+    "Jadwal":(document.getElementById("m_Jadwal")?.value||"").trim(),
+    "Status":(document.getElementById("m_Status")?.value||"").trim(),
+    "Berat":(document.getElementById("m_Berat")?.value||"").trim(),
+    "Harga":(document.getElementById("m_Harga")?.value||"").trim(),
+    "JadwalDiantar":(document.getElementById("m_JadwalDiantar")?.value||"").trim() 
+  };
+
+  showNotif("Sedang menyimpan...", "success");
+
+  fetch(GAS_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      type:"UpdateOrder",
+      rowIndex:selectedRowIndex,
+      payload: payload,
+      fileData: fileData 
+    })
+  })
+  .then(r=>r.json()).then(res=>{
+    if(res.result==="ok"){
+      showNotif("✅ Data berhasil disimpan","success");
+      document.getElementById("orderModal").style.display="none"; 
+      selectedRowIndex=null; 
+      loadOrders(); 
+    } else showNotif("⚠️ Gagal update","error");
+  }).catch(err=>{ console.error(err); showNotif("⚠️ Gagal update","error"); });
+});
+
+
+
+
+
+
+// ======= FILTER =======
+document.getElementById("searchInput").addEventListener("input",applyFilters);
+document.getElementById("statusFilter").addEventListener("change",applyFilters);
+function applyFilters(){
+  const q=(document.getElementById("searchInput").value||"").toLowerCase();
+  const st=document.getElementById("statusFilter").value;
+  const filtered=currentData.filter(o=>{
+    const text=`${o.Nama||""} ${o["No HP"]||""} ${o.Layanan||""}`.toLowerCase();
+    return (!q || text.includes(q)) && (!st || o.Status===st);
+  });
+  renderCards(filtered);
+}
+
+// ======= DASHBOARD =======
+function updateDashboard(data){
+  const totalOrders=data.length;
+  const totalWeight=data.reduce((s,o)=>s+(parseFloat(o.Berat)||0),0);
+  const totalIncome=data.reduce((s,o)=>s+(parseFloat(o.Harga)||0),0);
+  const active=data.filter(o=>!["Selesai","Diantar"].includes(o.Status)).length;
+  const completed=data.filter(o=>["Selesai","Diantar"].includes(o.Status)).length;
+  document.getElementById("totalOrders").textContent=totalOrders;
+  document.getElementById("totalWeight").textContent=totalWeight.toFixed(2)+" Kg";
+  document.getElementById("totalIncome").textContent="Rp "+totalIncome.toLocaleString("id-ID");
+  document.getElementById("activeOrders").textContent=active;
+  document.getElementById("completedOrders").textContent=completed;
+}
+
+// ======= REFRESH =======
+function confirmRefresh(){ if(confirm("Yakin mau reload data order?")){ loadOrders(); showNotif("🔄 Data berhasil direfresh","success"); } }
+document.querySelector('#newOrdersBox h3').addEventListener('click',()=>{ document.getElementById('newOrdersBox').classList.toggle('collapsed'); });
+
+// ======= ESCAPE HTML =======
+function escapeHtml(s){ return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;"); }
+
+// ======= DELETE ORDER =======
+function deleteOrder(rowIndex){
+  if(!confirm("Yakin ingin menghapus order ini?")) return;
+  showLoading();
+  fetch(GAS_URL,{method:"POST",body:JSON.stringify({type:"DeleteOrder",rowIndex})})
+    .then(r=>r.json()).then(res=>{
+      if(res.result==="ok"){ showNotif("✅ Order berhasil dihapus","success"); seenOrders.delete(String(rowIndex)); saveSeenOrders(); loadOrders(); }
+      else showNotif("⚠️ Gagal hapus order","error");
+    }).catch(err=>{ console.error(err); showNotif("⚠️ Gagal hapus order","error"); })
+    .finally(()=>hideLoading());
+}
+
+// ======= PREVIEW REPORT pakai pdf.js =======
+let reportPdf=null, reportScale=1.2, fitToWidth=false, currentPage=1;
+
+function renderReportPage(num){
+  const container=document.getElementById("reportPages");
+  container.innerHTML="";
+  if(!reportPdf) return;
+  reportPdf.getPage(num).then(page=>{
+    let viewport=page.getViewport({scale:reportScale});
+    if(fitToWidth){
+      const w=container.clientWidth-20;
+      const scale=w/viewport.width;
+      viewport=page.getViewport({scale});
+    }
+    const c=document.createElement("canvas");
+    const ctx=c.getContext("2d");
+    c.width=viewport.width; c.height=viewport.height;
+    container.appendChild(c);
+    page.render({canvasContext:ctx,viewport});
+    document.getElementById("pageInfo").textContent=`Halaman ${num} / ${reportPdf.numPages}`;
+  });
+}
+
+function generateReportPreview(){
+  const status=document.getElementById("reportStatusFilter").value;
+  const filtered=status?currentData.filter(o=>o.Status===status):currentData;
+  if(!filtered.length){ showNotif("Tidak ada order untuk preview","error"); return; }
+
+  const { jsPDF }=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'a4'});
+  doc.text("Preview Laporan Orders",297.5,30,{align:"center"});
+  doc.autoTable({
+    head:[["No","Nama","No HP","Layanan","Berat (Kg)","Harga (Rp)","Status","Jadwal"]],
+    body:filtered.map((o,i)=>[i+1,o.Nama||"-",o["No HP"]||"-",o.Layanan||"-",o.Berat||0,(+o.Harga||0).toLocaleString("id-ID"),o.Status||"-",o.Jadwal?new Date(o.Jadwal).toLocaleString("id-ID"):"-"]),
+    startY:50
+  });
+
+  const pdfData=doc.output("arraybuffer");
+  pdfjsLib.getDocument({data:pdfData}).promise.then(pdf=>{
+    reportPdf=pdf; currentPage=1; renderReportPage(currentPage);
+  }).catch(e=>{console.error(e);showNotif("⚠️ Preview gagal","error");});
+}
+
+document.getElementById("reportBtn").addEventListener("click",()=>{ 
+  document.getElementById("reportModal").style.display="flex"; 
+  generateReportPreview(); 
+});
+document.getElementById("closeReportModalBtn").addEventListener("click",()=>{ 
+  document.getElementById("reportModal").style.display="none"; 
+});
+document.getElementById("applyReportFilter").addEventListener("click",generateReportPreview);
+document.getElementById("prevPageBtn").addEventListener("click",()=>{ if(currentPage>1){currentPage--;renderReportPage(currentPage);} });
+document.getElementById("nextPageBtn").addEventListener("click",()=>{ if(reportPdf&&currentPage<reportPdf.numPages){currentPage++;renderReportPage(currentPage);} });
+document.getElementById("zoomInBtn").addEventListener("click",()=>{ reportScale+=0.2; renderReportPage(currentPage); });
+document.getElementById("zoomOutBtn").addEventListener("click",()=>{ if(reportScale>0.4){reportScale-=0.2; renderReportPage(currentPage);} });
+document.getElementById("fitWidthBtn").addEventListener("click",()=>{ fitToWidth=!fitToWidth; renderReportPage(currentPage); });
+document.getElementById("downloadReportBtn").addEventListener("click",()=>{
+  const { jsPDF }=window.jspdf;
+  const doc=new jsPDF({unit:'pt',format:'a4'});
+  doc.text("Laporan Orders",297.5,30,{align:"center"});
+  doc.autoTable({
+    head:[["No","Nama","No HP","Layanan","Berat (Kg)","Harga (Rp)","Status","Jadwal"]],
+    body:currentData.map((o,i)=>[i+1,o.Nama||"-",o["No HP"]||"-",o.Layanan||"-",o.Berat||0,(+o.Harga||0).toLocaleString("id-ID"),o.Status||"-",o.Jadwal?new Date(o.Jadwal).toLocaleString("id-ID"):"-"]),
+    startY:50
+  });
+  doc.save(`Laporan_Orders_${new Date().toISOString().slice(0,10)}.pdf`);
+});
+
+// ======= INIT =======
+window.addEventListener("DOMContentLoaded", loadOrders);
+</script>
+</body>
+</html>
