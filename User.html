@@ -362,7 +362,7 @@
         <!-- Jadwal -->
         <div class="form-group">
           <input type="date" id="jadwal" placeholder=" " required>
-          <label for="jadwal">Jadwal Penjemputan</label>
+          <label for="jadwal">Tanggal Pemesanan</label>
           <span class="icon">📅</span>
         </div>
 
@@ -554,24 +554,32 @@
 
     <!-- Area Hasil (Awalnya Tersembunyi) -->
     <div id="statusResult" style="display: none;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <div style="margin-bottom: 10px;">
         <h3 style="margin: 0; font-size: 1rem;">Riwayat Pesanan Anda</h3>
-        <button id="btnRefreshStatus" class="btn-refresh">🔄 Refresh</button>
       </div>
       
       <div id="orderGrid" class="order-grid">
         <!-- Hasil akan muncul di sini -->
       </div>
 
-<button id="btnLogoutStatus" style="margin-top: 20px; width: 100%; background: #ef4444; color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer;">
-  Cari No HP Lain
-</button>
+      <!-- Container Tombol Bawah (Refresh & Logout) -->
+      <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+        
+        <!-- Tombol Refresh (Pindah ke sini) -->
+        <button id="btnRefreshStatus" class="btn-refresh" style="width: 100%; justify-content: center; padding: 12px;">
+          REFRESH
+        </button>
+
+        <!-- Tombol Logout / Input No HP -->
+        <button id="btnLogoutStatus" style="width: 100%; background: #ef4444; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+          INPUT NO HP
+        </button>
+
+      </div>
     </div>
 
   </div>
 </div>
-
-
 
 <style>
 /* ================== ORDER GRID & CARD ================== */
@@ -692,8 +700,8 @@
 .order-item-card img:hover {
   opacity: 0.8;
 }
-
 </style>
+
 
 
 
@@ -1547,7 +1555,7 @@ async function loadStatusFromGAS() {
         <div class="order-body">
           <p><strong>👤 Pelanggan:</strong> ${order.nama}</p>
           <p><strong>🧺 Layanan:</strong> ${order.layanan}</p>
-          <p><strong>📅 Jadwal:</strong> ${jadwalJemput}</p>
+          <p><strong>📅 Pesan:</strong> ${jadwalJemput}</p>
           <p><strong>🏠 Alamat:</strong> ${order.alamat}</p>
           ${order.berat && order.berat !== '-' ? `<p><strong>⚖️ Berat:</strong> ${order.berat} kg</p>` : ''}
           ${order.harga && order.harga !== '-' ? `<p><strong>💰 Total:</strong> Rp ${order.harga}</p>` : ''}
