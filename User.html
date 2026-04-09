@@ -293,28 +293,152 @@
 <nav class="tab-menu">
   <button class="tab-btn" data-tab="home">Home</button>
   <button class="tab-btn" data-tab="order">Pesan Laundry</button>
-  <button class="tab-btn" data-tab="status">Status Order</button>
+  <button class="tab-btn" data-tab="status">Cek Order</button>
   <button class="tab-btn" data-tab="services">Layanan</button>
-  <button class="tab-btn" data-tab="faq">FAQ</button>
+  <button class="tab-btn" data-tab="faq">Tanya Jawab</button>
   <button class="tab-btn" data-tab="promo">Promo</button>
   <button class="tab-btn" data-tab="contact">Kontak</button>
 </nav>
 
+
+
+
 <!-- ================= TAB HOME ================= -->
 <div class="tab-content" id="home">
   <div class="card">
-
-    <h2>Selamat Datang di Laundry Express</h2>
-
-    <div class="grid-items">
-      <div class="item">Laundry online modern dan cepat</div>
-      <div class="item">Pesan mudah, jemput & antar cucian Anda</div>
-      <div class="item">Cucian wangi & rapi</div>
-      <div class="item">Layanan pelanggan responsif via WhatsApp</div>
+    <div class="home-hero">
+      <h2>Solusi Laundry Modern & Terpercaya</h2>
+      <p>Nikmati kemudahan mencuci tanpa harus keluar rumah. Bersih, wangi, dan rapi dalam sekejap!</p>
     </div>
 
+    <div class="grid-features">
+      <div class="feature-item">
+        <span class="feature-icon">🚀</span>
+        <div class="feature-text">
+          <strong>Layanan Cepat</strong>
+          <p>Proses kilat dengan hasil maksimal.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <span class="feature-icon">🚚</span>
+        <div class="feature-text">
+          <strong>Gratis Antar Jemput</strong>
+          <p>Cukup pesan, kurir kami langsung meluncur.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <span class="feature-icon">✨</span>
+        <div class="feature-text">
+          <strong>Kualitas Premium</strong>
+          <p>Cucian wangi, rapi, dan bersih higienis.</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <span class="feature-icon">💬</span>
+        <div class="feature-text">
+          <strong>Respon Cepat</strong>
+          <p>Layanan pelanggan via WhatsApp yang ramah.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="home-action">
+       <p>Tunggu apa lagi? Serahkan urusan cucian Anda pada ahlinya.</p>
+    </div>
   </div>
 </div>
+
+
+<style>
+  /* ================== HOME STYLES ================== */
+  .home-hero {
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .home-logo {
+    width: 100px;
+    height: auto;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+  }
+
+  .home-hero h2 {
+    color: #1f2937;
+    margin-bottom: 10px;
+  }
+
+  .home-hero p {
+    color: #6b7280;
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* Grid Fitur */
+  .grid-features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 15px;
+    margin-top: 30px;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+    transition: 0.3s;
+  }
+
+  .feature-item:hover {
+    transform: translateY(-5px);
+    border-color: #3b82f6;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.1);
+  }
+
+  .feature-icon {
+    font-size: 2rem;
+    background: white;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  }
+
+  .feature-text strong {
+    display: block;
+    color: #3b82f6;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+  }
+
+  .feature-text p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #4b5563;
+    line-height: 1.4;
+  }
+
+  .home-action {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #f1f5f9;
+    color: #6b7280;
+    font-style: italic;
+  }
+</style>
+
 
 
 
@@ -324,7 +448,7 @@
     <h2>Pesan Laundry</h2>
 
     <form id="orderForm" class="modern-form">
-      <div class="form-grid" style="grid-template-columns: 1fr !important; gap:15px;">
+      <div class="form-grid">
 
         <!-- Nama -->
         <div class="form-group">
@@ -344,13 +468,22 @@
         <div class="form-group">
           <select id="layanan" required>
             <option value="" disabled selected>Pilih Layanan</option>
-            <option value="cuci">Cuci Kering</option>
-            <option value="setrika">Setrika Saja</option>
-            <option value="cucisetrika">Cuci + Setrika</option>
+            <option value="Daily Kiloan">Daily Kiloan</option>
+            <option value="Cuci dan Setrika">Cuci dan Setrika</option>
+            <option value="Dry Cleaning">Dry Cleaning</option>
+            <option value="Setrika">Setrika Saja</option>
+            <option value="Green Dry Cleaning">Green Dry Cleaning</option>
+            <option value="Laundry Sepatu">Laundry Sepatu</option>
+            <option value="Laundry Tas">Laundry Tas</option>
+            <option value="Laundry Karpet">Laundry Karpet</option>
+            <option value="Laundry Gorden">Laundry Gorden</option>
+            <option value="Laundry Kulit">Laundry Kulit</option>
+            <option value="Lainnya">Layanan Lainnya</option>
           </select>
           <label for="layanan">Layanan</label>
           <span class="icon">🧺</span>
         </div>
+
 
         <!-- Catatan Tambahan -->
         <div class="form-group">
@@ -362,14 +495,14 @@
         <!-- Jadwal -->
         <div class="form-group">
           <input type="date" id="jadwal" placeholder=" " required>
-          <label for="jadwal">Tanggal Pemesanan</label>
+          <label for="jadwal">Tanggal Penjemputan</label>
           <span class="icon">📅</span>
         </div>
 
         <!-- Jam -->
         <div class="form-group">
           <input type="time" id="jam" placeholder=" " required>
-          <label for="jam">Waktu Pemesanan</label>
+          <label for="jam">Waktu Penjemputan</label>
           <span class="icon">⏰</span>
         </div>
 
@@ -381,19 +514,15 @@
         </div>
 
         <!-- Tombol Posisi Saya -->
-        <div style="width:100%; text-align:center;">
-          <button
-            type="button"
-            id="btn-posisi"
-            style="width:100%; padding:12px; border:none; border-radius:8px; background:#3b82f6; color:white; font-weight:600;"
-          >
+        <div class="posisi-container">
+          <button type="button" id="btn-posisi">
             📍 Posisi Saya
           </button>
         </div>
 
         <!-- Map + Kolom Jarak & Waktu -->
-        <div id="map-container" style="position:relative;">
-          <div id="map" style="width:100%;height:300px;"></div>
+        <div id="map-container">
+          <div id="map"></div>
           <div id="map-loading">Menghitung rute…</div>
         </div>
 
@@ -403,7 +532,7 @@
         </div>
 
         <!-- Tombol Submit WA -->
-        <button type="submit" class="btn-wa" style="width:100%; background:#25d366; color:white; padding:15px; border-radius:12px; font-weight:bold; border:none; cursor:pointer;">
+        <button type="submit" class="btn-wa">
           Kirim Pesanan
         </button>
 
@@ -414,7 +543,7 @@
 
 
 <style>
-  /* ================== FORM ================== */
+  /* ================== FORM LAYOUT ================== */
   .modern-form .form-grid {
     display: grid;
     grid-template-columns: 1fr;
@@ -445,6 +574,7 @@
     box-shadow: 0 0 12px rgba(59,130,246,0.3);
   }
 
+  /* Floating Labels */
   .form-group label {
     position: absolute;
     left: 12px;
@@ -474,12 +604,50 @@
     pointer-events: none;
   }
 
+  /* ================== BUTTONS ================== */
+  
+  /* Container Tombol Posisi */
+  .posisi-container {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Tombol Posisi Saya (BIRU) */
+  #btn-posisi {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #3b82f6;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  /* Tombol Kirim Pesanan (HIJAU) */
+  .btn-wa {
+    width: 100%;
+    background: #25d366;
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
   .modern-form button:hover {
     filter: brightness(0.9);
     transform: scale(1.01);
   }
 
   /* ================== MAP & INFO ================== */
+  #map-container {
+    position: relative;
+  }
+
   #map {
     width: 100%;
     height: 300px;
@@ -513,23 +681,13 @@
     text-align: center;
   }
 
-  #map-loading::before {
-    content: "";
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3b82f6;
-    border-radius: 50%;
-    width: 25px;
-    height: 25px;
-    animation: spin 1s linear infinite;
-    display: inline-block;
-    margin-bottom: 5px;
-  }
-
+  /* Animation */
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
 </style>
+
 
 
 
@@ -543,45 +701,147 @@
     <h2>Cek Status Pesanan</h2>
 
     <!-- Input Filter No HP -->
-    <div id="authStatus" style="margin-bottom: 20px; text-align: center;">
-      <p style="font-size: 0.9rem; color: #666;">Masukkan No HP Anda untuk melihat riwayat pesanan</p>
-      <div style="display: flex; gap: 10px; margin-top: 10px;">
-        <input type="tel" id="searchNoHP" placeholder="+628123..." 
-               style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #ccc;">
-        <button id="btnCekStatus" class="btn-refresh" style="padding: 10px 20px;">Cek</button>
+    <div id="authStatus" class="auth-container">
+      <p class="auth-hint">Masukkan No HP Anda untuk melihat riwayat pesanan</p>
+      <div class="input-group">
+        <input type="tel" id="searchNoHP" placeholder="+628123...">
+        <button id="btnCekStatus">Cek</button>
       </div>
     </div>
 
     <!-- Area Hasil (Awalnya Tersembunyi) -->
     <div id="statusResult" style="display: none;">
-      <div style="margin-bottom: 10px;">
-        <h3 style="margin: 0; font-size: 1rem;">Riwayat Pesanan Anda</h3>
+      <div class="result-header">
+        <h3>Riwayat Pesanan Anda</h3>
       </div>
       
       <div id="orderGrid" class="order-grid">
         <!-- Hasil akan muncul di sini -->
       </div>
 
-      <!-- Container Tombol Bawah (Refresh & Logout) -->
-      <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
-        
-        <!-- Tombol Refresh (Pindah ke sini) -->
-        <button id="btnRefreshStatus" class="btn-refresh" style="width: 100%; justify-content: center; padding: 12px;">
+      <!-- Container Tombol Bawah -->
+      <div class="action-buttons">
+        <button id="btnRefreshStatus" class="btn-refresh">
           REFRESH
         </button>
 
-        <!-- Tombol Logout / Input No HP -->
-        <button id="btnLogoutStatus" style="width: 100%; background: #ef4444; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold;">
+        <button id="btnLogoutStatus">
           INPUT NO HP
         </button>
-
       </div>
     </div>
 
   </div>
 </div>
 
+
 <style>
+/* ================== LAYOUT & CONTAINER ================== */
+.auth-container {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.auth-hint {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.result-header {
+  margin-bottom: 10px;
+}
+
+.result-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.action-buttons {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ================== INPUT & BUTTON STYLES ================== */
+
+/* Input No HP */
+#searchNoHP {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+  outline: none;
+  transition: border-color 0.3s;
+  font-size: 1rem;
+}
+
+#searchNoHP:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Tombol Cek - HIJAU (Ref: btn-wa) */
+#btnCekStatus {
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#btnCekStatus:hover {
+  background: #1eb956;
+  transform: translateY(-2px);
+}
+
+/* Tombol Refresh - HIJAU (Ref: btn-wa) */
+#btnRefreshStatus {
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  transition: 0.3s;
+  width: 100%;
+}
+
+#btnRefreshStatus:hover {
+  background: #1eb956;
+}
+
+/* Tombol Logout / Input No HP Baru - BIRU (Ref: btn-posisi) */
+#btnLogoutStatus {
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: 0.3s;
+}
+
+#btnLogoutStatus:hover {
+  background: #2563eb;
+}
+
 /* ================== ORDER GRID & CARD ================== */
 .order-grid {
   display: grid;
@@ -627,7 +887,6 @@
   text-transform: uppercase;
 }
 
-/* Warna Status */
 .status-dipesan  { background: #dbeafe; color: #1e40af; }
 .status-diproses { background: #fef3c7; color: #92400e; }
 .status-selesai  { background: #d1fae5; color: #065f46; }
@@ -641,66 +900,33 @@
 
 .order-body strong {
   color: #1f2937;
+  display: inline-block;
+  width: 110px;
 }
 
-/* Button Refresh Style */
-.btn-refresh {
-  background: #10b981;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: 0.3s;
+/* ================== ANIMATIONS ================== */
+@keyframes spin {
+  100% { transform: rotate(360deg); }
 }
-
-.btn-refresh:hover { background: #059669; }
 
 .refresh-spin .refresh-icon {
   display: inline-block;
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  100% { transform: rotate(360deg); }
-}
-
-/* ================== SPINNER LOADING ================== */
 .spinner {
   width: 40px;
   height: 40px;
-  margin: 0 auto;
+  margin: 20px auto;
   border: 4px solid #f3f3f3;
   border-top: 4px solid #3b82f6;
   border-radius: 50%;
-  animation: spin-loader 1s linear infinite;
-}
-
-@keyframes spin-loader {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Style tambahan untuk Jadwal Diantar */
-.order-body p strong {
-  display: inline-block;
-  width: 110px; /* Merapikan label agar sejajar */
-}
-
-.order-item-card img {
-  cursor: zoom-in;
-  transition: opacity 0.2s;
-}
-
-.order-item-card img:hover {
-  opacity: 0.8;
+  animation: spin 1s linear infinite;
 }
 </style>
+
+
+
 
 
 
@@ -710,132 +936,253 @@
 <!-- ================= TAB LAYANAN ================= -->
 <div class="tab-content" id="services">
   <div class="card">
-
-    <h2>Layanan & Harga</h2>
+    <h2>Layanan & Harga Kami</h2>
+    <p class="service-subtitle">Pilih layanan terbaik untuk kebutuhan Anda</p>
 
     <div class="grid-items">
       <div class="item">
-        <strong>Cuci Kering</strong><br>
-        Rp 10.000/kg
+        <strong>Daily Kiloan</strong>
+        <span>Rp 10.000/kg</span>
       </div>
 
       <div class="item">
-        <strong>Cuci + Setrika</strong><br>
-        Rp 15.000/kg
+        <strong>Cuci dan Setrika</strong>
+        <span>Rp 15.000/kg</span>
       </div>
 
       <div class="item">
-        <strong>Setrika Saja</strong><br>
-        Rp 7.000/kg
+        <strong>Dry Cleaning</strong>
+        <span>Rp 25.000/pcs</span>
       </div>
 
       <div class="item">
-        <strong>Cuci Sepatu</strong><br>
-        Rp 20.000/pasangan
+        <strong>Setrika</strong>
+        <span>Rp 8.000/kg</span>
       </div>
 
       <div class="item">
-        <strong>Cuci Karpet</strong><br>
-        Rp 30.000/meter
+        <strong>Green Dry Cleaning</strong>
+        <span>Rp 30.000/pcs</span>
+      </div>
+
+      <div class="item">
+        <strong>Laundry Sepatu</strong>
+        <span>Rp 25.000/pasang</span>
+      </div>
+
+      <div class="item">
+        <strong>Laundry Tas</strong>
+        <span>Rp 35.000/pcs</span>
+      </div>
+
+      <div class="item">
+        <strong>Laundry Karpet</strong>
+        <span>Rp 15.000/m²</span>
+      </div>
+
+      <div class="item">
+        <strong>Laundry Gorden</strong>
+        <span>Rp 12.000/m²</span>
+      </div>
+
+      <div class="item">
+        <strong>Laundry Kulit</strong>
+        <span>Hubungi CS</span>
+      </div>
+
+      <div class="item">
+        <strong>Lainnya</strong>
+        <span>Tanya WhatsApp</span>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ================= TAB FAQ ================= -->
+
+
+<style>
+  /* ================== SERVICES LAYOUT ================== */
+  .service-subtitle {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+  }
+
+  .grid-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+  }
+
+  .item {
+    /* Warna Biru Dasar (Daily Kiloan) */
+    background: #3b82f6; 
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #2563eb;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    transition: 0.3s;
+    text-align: left;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .item:hover {
+    transform: translateY(-3px);
+    background: #2563eb; /* Biru sedikit lebih gelap saat di-hover */
+    box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+  }
+
+  .item strong {
+    color: #ffffff; /* Teks Putih */
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .item span {
+    color: #e0f2fe; /* Warna teks harga (biru sangat muda) */
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  /* Responsif untuk layar kecil */
+  @media (max-width: 480px) {
+    .grid-items {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+
+
+
+
+
+
+<!-- ================= TAB Tanya Jawab ================= -->
 <div class="tab-content" id="faq">
   <div class="card">
-
-    <h2>FAQ</h2>
+    <h2>Pusat Bantuan & Tanya Jawab</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 20px;">Klik pertanyaan untuk melihat jawaban</p>
 
     <div class="accordion">
 
+      <!-- FAQ 1 -->
       <div class="accordion-item">
-        <div class="accordion-header">
-          Bagaimana cara memesan laundry?
-        </div>
+        <input type="checkbox" id="faq1" class="faq-toggle">
+        <label for="faq1" class="accordion-header">
+          🚀 Bagaimana cara memesan laundry secara online?
+        </label>
         <div class="accordion-content">
-          <p>
-            Cukup isi form di tab “Pesan Laundry” dan klik tombol kirim via WhatsApp.
-          </p>
+          <p>Mudah sekali! Masuk ke menu <b>"Pesan Laundry"</b>, isi data, dan klik <b>"Kirim Pesanan"</b> untuk terhubung ke WhatsApp kami.</p>
         </div>
       </div>
 
+      <!-- FAQ 2 -->
       <div class="accordion-item">
-        <div class="accordion-header">
-          Apakah laundry bisa dijemput?
-        </div>
+        <input type="checkbox" id="faq2" class="faq-toggle">
+        <label for="faq2" class="accordion-header">
+          📍 Apakah lokasi saya bisa dijangkau layanan jemput-antar?
+        </label>
         <div class="accordion-content">
-          <p>
-            Ya, kami menyediakan layanan jemput & antar cucian di area tertentu.
-          </p>
+          <p>Tentu! Gunakan tombol <b>"Posisi Saya"</b> di menu pemesanan untuk mengecek jangkauan kurir kami ke lokasi Anda.</p>
         </div>
       </div>
 
+      <!-- FAQ 3 -->
       <div class="accordion-item">
-        <div class="accordion-header">
-          Berapa lama proses laundry?
-        </div>
+        <input type="checkbox" id="faq3" class="faq-toggle">
+        <label for="faq3" class="accordion-header">
+          🔍 Bagaimana cara mengetahui status cucian saya?
+        </label>
         <div class="accordion-content">
-          <p>
-            Proses normal 1-2 hari kerja, tergantung jenis layanan dan jumlah cucian.
-          </p>
+          <p>Pantau secara <i>real-time</i> di menu <b>"Cek Order"</b> hanya dengan memasukkan nomor HP Anda.</p>
         </div>
       </div>
 
     </div>
-
   </div>
 </div>
 
+
+
 <style>
-  /* ================== ACCORDION ================== */
   .accordion-item {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     border-radius: 12px;
+    border: 1px solid #e2e8f0;
     overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+  }
+
+  /* Sembunyikan Checkbox-nya */
+  .faq-toggle {
+    display: none;
   }
 
   .accordion-header {
-    background: #e2e8f0;
-    padding: 12px 20px;
+    background: #ffffff;
+    padding: 15px 20px;
     cursor: pointer;
     font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     transition: background 0.3s;
-    position: relative;
-  }
-
-  .accordion-header::after {
-    content: '+';
-    position: absolute;
-    right: 20px;
-    font-weight: bold;
-    transition: transform 0.3s;
-  }
-
-  .accordion-header.active::after {
-    content: '−';
+    user-select: none; /* Agar teks tidak tersorot saat diklik cepat */
   }
 
   .accordion-header:hover {
-    background: #cbd5e1;
+    background: #f8fafc;
+  }
+
+  /* Simbol Panah/Plus */
+  .accordion-header::after {
+    content: '+';
+    font-size: 1.2rem;
+    color: #94a3b8;
+    transition: transform 0.3s;
+  }
+
+  /* EFEK SAAT DIKLIK (CHECKED) */
+  
+  /* 1. Ubah Header */
+  .faq-toggle:checked + .accordion-header {
+    background: #f0f9ff;
+    color: #3b82f6;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  /* 2. Putar/Ubah Simbol */
+  .faq-toggle:checked + .accordion-header::after {
+    content: '−';
+    transform: rotate(180deg);
+    color: #3b82f6;
+  }
+
+  /* 3. Munculkan Konten */
+  .faq-toggle:checked ~ .accordion-content {
+    max-height: 500px; /* Nilai besar agar cukup menampung teks */
+    padding: 15px 20px;
   }
 
   .accordion-content {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.4s ease;
+    transition: all 0.4s ease;
     padding: 0 20px;
     background: white;
   }
 
   .accordion-content p {
-    padding: 10px 0;
     margin: 0;
+    line-height: 1.6;
+    color: #4b5563;
   }
 </style>
+
 
 
 
@@ -843,96 +1190,216 @@
 <!-- ================= TAB PROMO ================= -->
 <div class="tab-content" id="promo">
   <div class="card">
-
-    <h2>Promo Menarik</h2>
+    <h2>Promo Spesial Untukmu</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 20px;">Gunakan kode promo saat memesan via WhatsApp!</p>
 
     <div class="promo-grid">
-
-      <div class="promo-item">
+      <!-- Promo 1 -->
+      <div class="promo-item hot-deal">
+        <div class="promo-badge">HOT DEAL</div>
         <h3>Diskon 20% Laundry Kilat</h3>
-        <p>Hanya berlaku minggu ini! Segera pesan via WA.</p>
+        <p>Khusus layanan Ekspres minggu ini. Makin cepat, makin hemat!</p>
+        <div class="promo-code">Kode: <span>KILAT20</span></div>
       </div>
 
+      <!-- Promo 2 -->
       <div class="promo-item">
         <h3>Cuci 5 Gratis 1</h3>
-        <p>Promo spesial untuk pelanggan setia.</p>
+        <p>Promo spesial pengumpulan kupon untuk pelanggan setia Sea Laundry.</p>
+        <div class="promo-code">Kode: <span>SETIA51</span></div>
       </div>
 
+      <!-- Promo 3 -->
+      <div class="promo-item">
+        <h3>Diskon Pengguna Baru</h3>
+        <p>Potongan Rp 5.000 untuk pesanan pertama Anda hari ini.</p>
+        <div class="promo-code">Kode: <span>HALOSEA</span></div>
+      </div>
     </div>
-
   </div>
 </div>
 
+
 <style>
-  /* ================= CSS: Promo ================= */
+  /* ================== PROMO STYLES ================== */
   .promo-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
   }
 
   .promo-item {
-    background: #f3f4f6;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #e2e8f0;
+    position: relative;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .promo-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    border-color: #3b82f6;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .promo-item h3 {
+    font-size: 1.2rem;
+    color: #1f2937;
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+
+  .promo-item p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+
+  /* Badge Promo */
+  .promo-badge {
+    position: absolute;
+    top: -10px;
+    right: 15px;
+    background: #ef4444; /* Merah untuk menarik perhatian */
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(239, 68, 68, 0.2);
+  }
+
+  /* Kode Promo Box */
+  .promo-code {
+    background: #f1f5f9;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px dashed #3b82f6;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #475569;
+  }
+
+  .promo-code span {
+    display: block;
+    font-weight: bold;
+    color: #3b82f6;
+    font-size: 1rem;
+    letter-spacing: 1px;
+  }
+
+  /* Highlight Promo Unggulan */
+  .promo-item.hot-deal {
+    border: 2px solid #3b82f6;
+    background: #f0f9ff;
+  }
+
+  @media (max-width: 480px) {
+    .promo-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
 
+
+
+
+
 <!-- ================= TAB KONTAK ================= -->
 <div class="tab-content" id="contact">
-  <div class="card contact-info">
+  <div class="card">
+    <div class="contact-header">
+      <h2>Hubungi Kami</h2>
+      <p>Punya pertanyaan atau ingin berlangganan? Kami siap melayani Anda.</p>
+    </div>
 
-    <h2>Kontak</h2>
-
-    <p>
-      WhatsApp:
-      <a href="https://wa.me/6287877929391" target="_blank">
-        +62 878-7792-9391
+    <div class="grid-features">
+      <!-- WhatsApp -->
+      <a href="https://wa.me/6287877929391" target="_blank" class="feature-item contact-link">
+        <span class="feature-icon">💬</span>
+        <div class="feature-text">
+          <strong>WhatsApp</strong>
+          <p>+62 878-7792-9391</p>
+        </div>
       </a>
-    </p>
 
-    <p>
-      Email:
-      <a href="mailto:info@sealaundry.com">
-        info@sealaundry.com
+      <!-- Email -->
+      <a href="mailto:info@sealaundry.com" class="feature-item contact-link">
+        <span class="feature-icon">📧</span>
+        <div class="feature-text">
+          <strong>Email</strong>
+          <p>info@sealaundry.com</p>
+        </div>
       </a>
-    </p>
 
-    <p>Alamat: Jl. Contoh No.123, Jakarta</p>
+      <!-- Alamat -->
+      <div class="feature-item">
+        <span class="feature-icon">📍</span>
+        <div class="feature-text">
+          <strong>Alamat</strong>
+          <p>Jl. Contoh No.123, Jakarta</p>
+        </div>
+      </div>
+    </div>
 
+    <div class="home-action">
+      <p>Jam Operasional: 08.00 - 20.00 WIB</p>
+    </div>
   </div>
 </div>
 
 <style>
-  /* ================== KONTAK ================== */
-  .contact-info p {
-    margin: 10px 0;
-    font-size: 1rem;
+  /* ================== KONTAK STYLES ================== */
+  .contact-header {
+    text-align: center;
+    margin-bottom: 25px;
   }
 
-  .contact-info a {
-    color: #3b82f6;
-    font-weight: 600;
+  .contact-header h2 {
+    color: #1f2937;
+    margin-bottom: 8px;
   }
 
-  .contact-info a:hover {
+  .contact-header p {
+    color: #6b7280;
+    font-size: 0.95rem;
+  }
+
+  /* Menghapus dekorasi link pada item kontak */
+  .contact-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+  }
+
+  .contact-link:hover .feature-text strong {
     text-decoration: underline;
   }
+
+  /* Penyesuaian agar teks alamat tidak terlalu panjang */
+  .feature-text p {
+    word-break: break-word;
+  }
 </style>
+
+
+
+
+
+
+
 
 <!-- ================= CHAT WA & TOAST ================= -->
 <div 
   id="waChat" 
   onclick="window.open('https://wa.me/6287877929391','_blank')"
 >
-  Chat WA
+  WA
 </div>
 
 <div id="toast">
@@ -989,7 +1456,7 @@
 
 <!-- ================= FOOTER ================= -->
 <footer>
-  <p>&copy; 2025 Sea Laundry. All rights reserved.</p>
+  <p>&copy; 2025 Sea System. All rights reserved.</p>
 </footer>
 
 <style>
@@ -1015,8 +1482,7 @@
 
 
 
-
-<!-- ========== JS PESAN LAUNDRY UPDATED ========== -->
+<!-- ========== JS PESAN LAUNDRY ========== -->
 <script>
   // ================= Helpers (Fungsi Pembantu) =================
   const getJamSekarang = () => {
@@ -1025,29 +1491,28 @@
            n.getMinutes().toString().padStart(2, '0');
   };
 
-  const getTanggalBesok = () => {
+  const getJamPlus30Menit = () => {
     const n = new Date();
-    n.setDate(n.getDate() + 1);
-    return n.toISOString().split('T')[0];
+    n.setMinutes(n.getMinutes() + 30);
+    return n.getHours().toString().padStart(2, '0') + ':' + 
+           n.getMinutes().toString().padStart(2, '0');
+  };
+
+  const getTanggalSekarang = () => {
+    const n = new Date();
+    const offset = n.getTimezoneOffset() * 60000;
+    return new Date(n - offset).toISOString().split('T')[0];
   };
 
   const fields = ['nama', 'alamat', 'nohp', 'layanan', 'jadwal', 'jam', 'catatan'];
 
   // ================= Initialization =================
   window.addEventListener('DOMContentLoaded', () => {
-    // 1. Hapus jam lama agar selalu realtime saat reload
     localStorage.removeItem('order_jam');
 
-    // 2. Interval Jam Realtime (update tiap detik)
-    const elJam = document.getElementById('jam');
-    setInterval(() => {
-      // Hanya update jika user tidak sedang fokus/mengedit manual
-      if (elJam && document.activeElement !== elJam) {
-        elJam.value = getJamSekarang();
-      }
-    }, 1000);
+    const elJadwal = document.getElementById('jadwal');
+    if (elJadwal) elJadwal.setAttribute('min', getTanggalSekarang());
 
-    // 3. Load data dari LocalStorage atau set Default
     fields.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
@@ -1056,14 +1521,13 @@
       if (saved !== null && saved !== "" && id !== 'jam') {
         el.value = saved;
       } else {
-        if (id === 'jam') el.value = getJamSekarang();
-        if (id === 'jadwal') el.value = getTanggalBesok();
+        if (id === 'jam') el.value = getJamPlus30Menit();
+        if (id === 'jadwal') el.value = getTanggalSekarang(); 
       }
       el.dispatchEvent(new Event('input'));
     });
   });
 
-  // 4. Listener simpan otomatis (KECUALI JAM)
   fields.forEach(id => {
     const el = document.getElementById(id);
     if (!el || id === 'jam') return; 
@@ -1072,7 +1536,6 @@
     });
   });
 
-  // ===== Format otomatis No HP =====
   const nohpInput = document.getElementById('nohp');
   if (nohpInput) {
     nohpInput.addEventListener('input', (e) => {
@@ -1085,7 +1548,6 @@
     });
   }
 
-  // ================= Tab & Animasi =================
   const tabs = document.querySelectorAll('.tab-btn');
   const contents = document.querySelectorAll('.tab-content');
   const shownTabs = {};
@@ -1115,7 +1577,6 @@
 
   showItems('home');
 
-  // ================= Navigation & UI =================
   const ctaBtn = document.querySelector('.cta-btn');
   if (ctaBtn) {
     ctaBtn.addEventListener('click', e => {
@@ -1152,7 +1613,6 @@
   // ================= Form Submit =================
   document.getElementById('orderForm').addEventListener('submit', e => {
     e.preventDefault();
-    if (!confirm('Apakah Anda yakin ingin mengirim pesanan via WhatsApp?')) return;
 
     const nama = document.getElementById('nama').value.trim();
     const nohp = document.getElementById('nohp').value.trim();
@@ -1162,9 +1622,31 @@
     const jam = document.getElementById('jam').value;
     const alamat = document.getElementById('alamat').value.trim();
 
+    // Validasi Wajib Isi
+    if (!nama) {
+      alert('Nama wajib diisi!');
+      document.getElementById('nama').focus();
+      return;
+    }
+    if (!nohp || nohp === '+62') {
+      alert('Nomor HP wajib diisi!');
+      document.getElementById('nohp').focus();
+      return;
+    }
+    if (nohp.length < 10) {
+      alert('Nomor HP minimal 10 digit!');
+      document.getElementById('nohp').focus();
+      return;
+    }
+
+    if (!confirm('Apakah Anda yakin ingin pesanan?')) return;
+
     const selectedDateTime = new Date(`${tanggal}T${jam}`);
-    if (selectedDateTime < new Date()) {
-      alert('Jadwal tidak boleh di masa lalu');
+    const waktuMinimal = new Date();
+    waktuMinimal.setMinutes(waktuMinimal.getMinutes() - 5); 
+
+    if (selectedDateTime < waktuMinimal) {
+      alert('Waktu penjemputan tidak boleh di masa lalu.');
       return;
     }
 
@@ -1190,9 +1672,8 @@
       fields.forEach(id => localStorage.removeItem('order_' + id));
       document.getElementById('orderForm').reset();
       
-      // Update jam & tanggal ke waktu terbaru setelah reset
-      document.getElementById('jam').value = getJamSekarang();
-      document.getElementById('jadwal').value = getTanggalBesok();
+      document.getElementById('jam').value = getJamPlus30Menit();
+      document.getElementById('jadwal').value = getTanggalSekarang();
 
       if (typeof userMarker !== 'undefined' && userMarker) map.removeLayer(userMarker);
       if (typeof rutePolyline !== 'undefined' && rutePolyline) map.removeLayer(rutePolyline);
@@ -1201,6 +1682,9 @@
     .catch(err => alert('Terjadi masalah saat menyimpan data.'));
   });
 </script>
+
+
+
 
 
 
@@ -1555,7 +2039,7 @@ async function loadStatusFromGAS() {
         <div class="order-body">
           <p><strong>👤 Pelanggan:</strong> ${order.nama}</p>
           <p><strong>🧺 Layanan:</strong> ${order.layanan}</p>
-          <p><strong>📅 Pesan:</strong> ${jadwalJemput}</p>
+          <p><strong>📅 Jemput:</strong> ${jadwalJemput}</p>
           <p><strong>🏠 Alamat:</strong> ${order.alamat}</p>
           ${order.berat && order.berat !== '-' ? `<p><strong>⚖️ Berat:</strong> ${order.berat} kg</p>` : ''}
           ${order.harga && order.harga !== '-' ? `<p><strong>💰 Total:</strong> Rp ${order.harga}</p>` : ''}
