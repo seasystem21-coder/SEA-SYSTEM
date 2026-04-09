@@ -742,7 +742,7 @@
 /* ================== INPUT & BUTTON STYLES ================== */
 #searchNoHP { 
   flex: 1; padding: 12px 16px; border-radius: 12px; 
-  border: 2px solid #cbd5e1; /* Border lebih tegas */
+  border: 2px solid #cbd5e1; 
   background: #ffffff; color: #1e293b; font-size: 1rem; 
   font-weight: 600; transition: all 0.3s ease; 
 }
@@ -754,18 +754,14 @@
 }
 #btnCekStatus:hover { background: #15803d; }
 
-/* TOMBOL AKSI BAWAH - HIJAU & BIRU */
+/* TOMBOL AKSI BAWAH */
 .action-buttons { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 #btnRefreshStatus, #btnLogoutStatus { 
   padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; 
   cursor: pointer; border: none; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.8px;
 }
-
-/* Refresh: HIJAU (Senada dengan Cek Status/WA) */
 #btnRefreshStatus { background: #16a34a; color: #ffffff; }
 #btnRefreshStatus:hover { background: #15803d; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25); }
-
-/* Ganti Nomor: BIRU (Senada dengan Tombol Posisi) */
 #btnLogoutStatus { background: #3b82f6; color: #ffffff; }
 #btnLogoutStatus:hover { background: #2563eb; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); }
 
@@ -796,15 +792,10 @@
 .status-info-row { 
   display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; 
 }
-.status-info-row .icon-box { 
-  font-size: 1.1rem; padding-top: 2px;
-}
-.status-info-row .text-content { display: flex; flex-direction: column; }
-.status-info-row label { 
-  font-size: 0.65rem; color: #64748b; font-weight: 700; 
-  text-transform: uppercase; margin-bottom: 2px;
-}
-.status-info-row span { font-size: 0.95rem; color: #1e293b; font-weight: 600; line-height: 1.4; }
+.status-info-row .icon-box { font-size: 1.1rem; padding-top: 2px; }
+.status-info-row .text-content { display: flex; flex-direction: column; width: 100%; }
+.status-info-row label { font-size: 0.65rem; color: #64748b; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+.status-info-row span { font-size: 0.95rem; color: #1e293b; font-weight: 600; line-height: 1.4; word-break: break-word; }
 
 /* TOMBOL & LINK */
 .btn-pesan-lagi { 
@@ -822,10 +813,22 @@
 }
 .link-foto:hover { background: #e2e8f0; }
 
+/* ================== RESPONSIVE (HP) ================== */
+@media (max-width: 600px) {
+  .order-grid { grid-template-columns: 1fr; gap: 15px; }
+  .order-item-card { padding: 16px; border-radius: 16px; }
+  .input-group { flex-direction: column; }
+  #btnCekStatus { padding: 12px; width: 100%; }
+  .action-buttons { grid-template-columns: 1fr; } /* Tombol bawah jadi tumpuk di HP agar rapi */
+  .status-info-row { gap: 10px; }
+  .status-info-row span { font-size: 0.85rem; }
+}
+
 /* ANIMATIONS */
 @keyframes spin { 100% { transform: rotate(360deg); } }
 .spinner { width: 35px; height: 35px; margin: 30px auto; border: 3px solid #f1f5f9; border-top: 3px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
 </style>
+
 
 
 
