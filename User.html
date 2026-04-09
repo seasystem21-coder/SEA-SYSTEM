@@ -1590,7 +1590,7 @@
     });
   }
 
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbwBIAnp4fWj9ThG94QNm3u38MrRmrwtR7DT_13I9P5E9WRrnLhReXfiSABM9uIs23mRKg/exec';
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxO566yFTDATWYuRpfaZC2mVWG7K1yuU4m7bjzjFw4SXVJuPdHUaQCo0yY2DRlp4OrD/exec';
   const waBtn = document.getElementById('waChat');
   if (waBtn) {
     waBtn.addEventListener('click', () => {
@@ -1660,28 +1660,51 @@
     document.querySelector('.tab-btn[data-tab="status"]')?.click();
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
+    // Update bagian fetch untuk mengirim mapsLink
     fetch(GAS_URL, {
       method: 'POST',
       body: JSON.stringify({
         type: 'PesanLaundry',
-        payload: { nama, nohp, layanan, catatan, jadwal: tanggal + ' ' + jam, alamat }
+        payload: { 
+          nama, 
+          nohp, 
+          layanan, 
+          catatan, 
+          jadwal: tanggal + ' ' + jam, 
+          alamat,
+          mapsLink: mapsLink 
+        }
       })
     })
     .then(() => {
       showToast('Pesanan berhasil dikirim!');
       fields.forEach(id => localStorage.removeItem('order_' + id));
+      
+      const elAlamat = document.getElementById('alamat');
+      elAlamat.value = "";
+      delete elAlamat.dataset.maplink; 
       document.getElementById('orderForm').reset();
       
       document.getElementById('jam').value = getJamPlus30Menit();
       document.getElementById('jadwal').value = getTanggalSekarang();
 
-      if (typeof userMarker !== 'undefined' && userMarker) map.removeLayer(userMarker);
-      if (typeof rutePolyline !== 'undefined' && rutePolyline) map.removeLayer(rutePolyline);
+      if (typeof userMarker !== 'undefined' && userMarker && map) {
+          map.removeLayer(userMarker);
+          userMarker = null;
+      }
+      if (typeof rutePolyline !== 'undefined' && rutePolyline && map) {
+          map.removeLayer(rutePolyline);
+          rutePolyline = null;
+      }
       document.getElementById('route-info').textContent = 'Jarak: -- km | Perkiraan Waktu: -- menit';
     })
-    .catch(err => alert('Terjadi masalah saat menyimpan data.'));
-  });
+    .catch(err => {
+      console.error('Error:', err);
+      alert('Terjadi masalah saat menyimpan data.');
+    });
+  }); // <--- Penutup Event Listener yang tadi hilang sudah ditambahkan
 </script>
+
 
 
 
