@@ -716,214 +716,121 @@
       </div>
       
       <div id="orderGrid" class="order-grid">
-        <!-- Hasil akan muncul di sini -->
+        <!-- Hasil akan muncul di sini via JS -->
       </div>
 
       <!-- Container Tombol Bawah -->
       <div class="action-buttons">
-        <button id="btnRefreshStatus" class="btn-refresh">
-          REFRESH
-        </button>
-
-        <button id="btnLogoutStatus">
-          INPUT NO HP
-        </button>
+        <button id="btnRefreshStatus" class="btn-refresh">REFRESH</button>
+        <button id="btnLogoutStatus">INPUT NO HP BARU</button>
       </div>
     </div>
-
   </div>
 </div>
 
 
+
+
 <style>
 /* ================== LAYOUT & CONTAINER ================== */
-.auth-container {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.auth-hint {
-  font-size: 0.9rem;
-  color: #666;
-}
-
-.input-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.result-header {
-  margin-bottom: 10px;
-}
-
-.result-header h3 {
-  margin: 0;
-  font-size: 1rem;
-}
-
-.action-buttons {
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+.auth-container { margin-bottom: 25px; text-align: center; }
+.auth-hint { font-size: 0.85rem; color: #475569; margin-bottom: 15px; font-weight: 500; }
+.input-group { display: flex; gap: 8px; max-width: 400px; margin: 0 auto; }
+.result-header { margin: 20px 0 15px; border-left: 4px solid #3b82f6; padding-left: 12px; }
+.result-header h3 { font-size: 1.1rem; color: #1e293b; font-weight: 700; }
 
 /* ================== INPUT & BUTTON STYLES ================== */
+#searchNoHP { 
+  flex: 1; padding: 12px 16px; border-radius: 12px; 
+  border: 2px solid #cbd5e1; /* Border lebih tegas */
+  background: #ffffff; color: #1e293b; font-size: 1rem; 
+  font-weight: 600; transition: all 0.3s ease; 
+}
+#searchNoHP:focus { border-color: #3b82f6; outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
 
-/* Input No HP */
-#searchNoHP {
-  flex: 1;
-  padding: 12px;
-  border-radius: 8px;
-  border: 2px solid #e2e8f0;
-  outline: none;
-  transition: border-color 0.3s;
-  font-size: 1rem;
+#btnCekStatus { 
+  background: #16a34a; color: white; border: none; padding: 0 24px; 
+  border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; 
+}
+#btnCekStatus:hover { background: #15803d; }
+
+/* TOMBOL AKSI BAWAH - HIJAU & BIRU */
+.action-buttons { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+#btnRefreshStatus, #btnLogoutStatus { 
+  padding: 14px; border-radius: 12px; font-weight: 800; font-size: 0.85rem; 
+  cursor: pointer; border: none; transition: 0.3s; text-transform: uppercase; letter-spacing: 0.8px;
 }
 
-#searchNoHP:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
+/* Refresh: HIJAU (Senada dengan Cek Status/WA) */
+#btnRefreshStatus { background: #16a34a; color: #ffffff; }
+#btnRefreshStatus:hover { background: #15803d; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25); }
 
-/* Tombol Cek - HIJAU (Ref: btn-wa) */
-#btnCekStatus {
-  background: #25d366;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
+/* Ganti Nomor: BIRU (Senada dengan Tombol Posisi) */
+#btnLogoutStatus { background: #3b82f6; color: #ffffff; }
+#btnLogoutStatus:hover { background: #2563eb; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25); }
 
-#btnCekStatus:hover {
-  background: #1eb956;
-  transform: translateY(-2px);
-}
+/* ================== ORDER CARD (MINIMALIST) ================== */
+.order-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
 
-/* Tombol Refresh - HIJAU (Ref: btn-wa) */
-#btnRefreshStatus {
-  background: #25d366;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  transition: 0.3s;
-  width: 100%;
+.order-item-card { 
+  background: #ffffff; border-radius: 20px; padding: 20px; 
+  border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s ease; position: relative; overflow: hidden;
 }
+.order-item-card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05); border-color: #cbd5e1; }
 
-#btnRefreshStatus:hover {
-  background: #1eb956;
+.order-header { 
+  display: flex; justify-content: space-between; align-items: center; 
+  margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9;
 }
+.order-id { font-family: 'Monospace', monospace; font-size: 0.8rem; color: #64748b; font-weight: 700; }
 
-/* Tombol Logout / Input No HP Baru - BIRU (Ref: btn-posisi) */
-#btnLogoutStatus {
-  background: #3b82f6;
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  width: 100%;
-  transition: 0.3s;
+.order-status-badge { 
+  padding: 6px 14px; border-radius: 100px; font-size: 0.75rem; font-weight: 800; 
 }
-
-#btnLogoutStatus:hover {
-  background: #2563eb;
-}
-
-/* ================== ORDER GRID & CARD ================== */
-.order-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.order-item-card {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 15px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
-  text-align: left;
-}
-
-.order-item-card:hover {
-  transform: translateY(-5px);
-}
-
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-}
-
-.order-id {
-  font-weight: bold;
-  color: #3b82f6;
-  font-size: 0.9rem;
-}
-
-.order-status-badge {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
 .status-dipesan  { background: #dbeafe; color: #1e40af; }
 .status-diproses { background: #fef3c7; color: #92400e; }
 .status-selesai  { background: #d1fae5; color: #065f46; }
 
-.order-body p {
-  margin: 5px 0;
-  font-size: 0.85rem;
-  color: #4b5563;
-  line-height: 1.4;
+/* INFO ROW STYLE */
+.status-info-row { 
+  display: flex; align-items: flex-start; gap: 14px; margin-bottom: 14px; 
 }
+.status-info-row .icon-box { 
+  font-size: 1.1rem; padding-top: 2px;
+}
+.status-info-row .text-content { display: flex; flex-direction: column; }
+.status-info-row label { 
+  font-size: 0.65rem; color: #64748b; font-weight: 700; 
+  text-transform: uppercase; margin-bottom: 2px;
+}
+.status-info-row span { font-size: 0.95rem; color: #1e293b; font-weight: 600; line-height: 1.4; }
 
-.order-body strong {
-  color: #1f2937;
-  display: inline-block;
-  width: 110px;
+/* TOMBOL & LINK */
+.btn-pesan-lagi { 
+  margin-top: 15px; width: 100%; background: #2563eb; color: white; 
+  border: none; padding: 14px; border-radius: 12px; font-weight: 800; 
+  font-size: 0.9rem; cursor: pointer; transition: 0.3s; 
 }
+.btn-pesan-lagi:hover { background: #1d4ed8; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
 
-/* ================== ANIMATIONS ================== */
-@keyframes spin {
-  100% { transform: rotate(360deg); }
+.link-foto { 
+  text-decoration: none; color: #1e293b; font-size: 0.85rem; 
+  display: flex; align-items: center; justify-content: center; gap: 8px; 
+  font-weight: 700; background: #f1f5f9; padding: 12px; 
+  border-radius: 12px; border: 1px solid #e2e8f0; margin-top: 10px;
 }
+.link-foto:hover { background: #e2e8f0; }
 
-.refresh-spin .refresh-icon {
-  display: inline-block;
-  animation: spin 1s linear infinite;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  margin: 20px auto;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #3b82f6;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
+/* ANIMATIONS */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spinner { width: 35px; height: 35px; margin: 30px auto; border: 3px solid #f1f5f9; border-top: 3px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
 </style>
+
+
+
+
+
 
 
 
@@ -1909,39 +1816,55 @@
 
 <!-- ========== JS STATUS ORDER COMPLETE UPDATED ========== -->
 <script>
-// 1. NAVIGASI TAB (Mencegah alert otomatis saat pindah tab)
+// 1. FUNGSI PESAN LAGI (DIPERBAIKI: Mengisi Catatan)
+function isiOtomatisPesanLagi(nama, nohp, alamat, layanan, catatan) {
+  if(!confirm("Gunakan data ini untuk membuat pesanan baru?")) return;
+
+  // Isi semua field form order
+  document.getElementById('nama').value = nama;
+  document.getElementById('nohp').value = nohp;
+  document.getElementById('alamat').value = alamat;
+  document.getElementById('layanan').value = layanan;
+  document.getElementById('catatan').value = catatan || ""; // Mengisi catatan
+
+  // Trigger event input agar label bergerak dan tersimpan ke localStorage
+  ['nama', 'nohp', 'alamat', 'layanan', 'catatan'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.dispatchEvent(new Event('input'));
+  });
+
+  // Pindah ke tab order
+  const tabOrder = document.querySelector('.tab-btn[data-tab="order"]');
+  if(tabOrder) tabOrder.click();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if(typeof showToast === 'function') showToast("Data pesanan telah dimuat!");
+}
+
+// 2. NAVIGASI TAB & RESET TAMPILAN
 if (typeof tabs !== 'undefined') {
   tabs.forEach(btn => {
     btn.addEventListener('click', function(e) {
       const tabId = this.dataset.tab;
-
-      // Reset visual tab
       tabs.forEach(b => b.classList.remove('active'));
       this.classList.add('active');
-
       contents.forEach(c => c.classList.remove('active'));
       const targetTab = document.getElementById(tabId);
       if (targetTab) targetTab.classList.add('active');
 
-      // RESET TAMPILAN TAB STATUS
       if (tabId === 'status') {
         e.stopImmediatePropagation(); 
-        
         const authArea = document.getElementById('authStatus');
         const resultArea = document.getElementById('statusResult');
         const container = document.getElementById('orderGrid');
         const searchInput = document.getElementById('searchNoHP');
-        
         if (authArea) authArea.style.display = 'block';
         if (resultArea) resultArea.style.display = 'none';
         if (container) container.innerHTML = '';
-        
-        // Pastikan input No HP di status terisi +62 saat tab dibuka
         if (searchInput && (searchInput.value === '' || searchInput.value === ' ')) {
           searchInput.value = '+62';
         }
       }
-
       if (typeof showItems === 'function') showItems(tabId);
     }, true); 
   });
@@ -1949,30 +1872,21 @@ if (typeof tabs !== 'undefined') {
 
 // ===== FORMAT OTOMATIS NO HP STATUS ORDER =====
 const searchInputStatus = document.getElementById('searchNoHP');
-
 if (searchInputStatus) {
   window.addEventListener('DOMContentLoaded', () => {
     if (!searchInputStatus.value) searchInputStatus.value = '+62';
   });
-
   searchInputStatus.addEventListener('input', (e) => {
-    let val = e.target.value;
-    val = val.replace(/\D/g, ''); 
-
-    if (val.startsWith('0')) {
-      val = '+62' + val.slice(1);
-    } else if (val.startsWith('62')) {
-      val = '+62' + val.slice(2);
-    } else if (!val.startsWith('+62')) {
-      val = '+62' + val;
-    }
-
+    let val = e.target.value.replace(/\D/g, ''); 
+    if (val.startsWith('0')) val = '+62' + val.slice(1);
+    else if (val.startsWith('62')) val = '+62' + val.slice(2);
+    else if (!val.startsWith('+62')) val = '+62' + val;
     if (val.length > 15) val = val.slice(0, 15);
     e.target.value = val;
   });
 }
 
-// 2. FUNGSI LOAD STATUS (Pencarian & Spinner)
+// 3. FUNGSI LOAD STATUS DARI GAS
 async function loadStatusFromGAS() {
   const container = document.getElementById('orderGrid');
   const inputNoHP = document.getElementById('searchNoHP').value.trim();
@@ -1984,127 +1898,107 @@ async function loadStatusFromGAS() {
     return;
   }
 
-  container.innerHTML = `
-    <div style="grid-column: 1/-1; text-align: center; padding: 40px;">
-      <div class="spinner"></div>
-      <p style="margin-top: 15px; color: #666; font-weight: 500;">Mencari data pesanan...</p>
-    </div>
-  `;
-
+  container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><div class="spinner"></div><p>Mencari data...</p></div>`;
   authArea.style.display = 'none';
   resultArea.style.display = 'block';
 
   try {
     const response = await fetch(GAS_URL + '?action=getOrders');
     const data = await response.json();
-
     const cleanSearch = inputNoHP.replace(/\D/g, '');
-    const filteredData = data.filter(order => {
-      const cleanDB = String(order.nohp).replace(/\D/g, '');
-      return cleanDB === cleanSearch;
-    });
+    const filteredData = data.filter(order => String(order.nohp).replace(/\D/g, '') === cleanSearch);
 
     if (filteredData.length === 0) {
-      container.innerHTML = `
-        <div style="text-align:center; grid-column: 1/-1; padding: 40px 20px;">
-          <div style="font-size: 3rem; margin-bottom: 10px;">🔍</div>
-          <p style="color: #ef4444; font-weight: bold; font-size: 1.1rem; margin: 0;">Pesanan tidak ditemukan</p>
-          <p style="font-size: 0.85rem; color: #666; margin-top: 5px;">Data untuk nomor ${inputNoHP} belum ada.</p>
-        </div>`;
+      container.innerHTML = `<div style="text-align:center; grid-column: 1/-1; padding: 40px 20px;"><div style="font-size: 3rem;">🔍</div><p style="color: #ef4444; font-weight: bold;">Pesanan tidak ditemukan</p></div>`;
       return;
     }
 
     container.innerHTML = '';
-    
-    // --- FUNGSI PEMBANTU FORMAT TANGGAL ---
     const formatTglCustom = (tglRaw) => {
       if (!tglRaw || tglRaw === "-" || tglRaw === "") return "Menunggu update";
       try {
         const d = new Date(tglRaw);
         if (isNaN(d.getTime())) return tglRaw;
-        const tgl = String(d.getDate()).padStart(2, '0');
-        const bln = String(d.getMonth() + 1).padStart(2, '0');
-        const thn = d.getFullYear();
-        const jam = String(d.getHours()).padStart(2, '0');
-        const mnt = String(d.getMinutes()).padStart(2, '0');
-        return `${tgl}/${bln}/${thn} jam ${jam}:${mnt}`;
+        return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
       } catch (e) { return tglRaw; }
     };
 
     filteredData.reverse().forEach(order => { 
       const card = document.createElement('div');
       card.className = 'order-item-card';
-      
-      const jadwalJemput = formatTglCustom(order.jadwal);
-      const jadwalAntar = formatTglCustom(order.jadwalDiantar);
 
-      // --- TAMPILAN LINK FOTO (IKON LINK) ---
-      let fotoHtml = "";
-      if (order.foto && order.foto.startsWith("http")) {
-        fotoHtml = `
-          <div style="margin-top:12px; padding-top:12px; border-top:1px dashed #e2e8f0;">
-            <a href="${order.foto}" target="_blank" style="text-decoration:none; color:#1e40af; font-size:0.85rem; display:flex; align-items:center; gap:8px; font-weight:bold; background:#eff6ff; padding:8px; border-radius:6px; border:1px solid #bfdbfe;">
-              🔗 Lihat Foto Timbangan
-            </a>
-          </div>`;
-      }
+      // PENGAMAN TANDA KUTIP (Agar parameter onclick tidak rusak)
+      const nAman = (order.nama || "").replace(/'/g, "\\'");
+      const aAman = (order.alamat || "").replace(/'/g, "\\'");
+      const cAman = (order.catatan || "").replace(/'/g, "\\'");
 
       const s = (order.status || 'Dipesan').toLowerCase();
       let statusClass = 'status-dipesan';
       if (s.includes('proses')) statusClass = 'status-diproses';
       if (s.includes('selesai') || s.includes('antar')) statusClass = 'status-selesai';
 
+      const jadwalJemput = formatTglCustom(order.jadwal);
+      const jadwalAntar = formatTglCustom(order.jadwalDiantar);
+
+      let fotoHtml = "";
+      if (order.foto && order.foto.startsWith("http")) {
+        fotoHtml = `<a href="${order.foto}" target="_blank" class="link-foto">🔗 Lihat Foto Timbangan</a>`;
+      }
+
       card.innerHTML = `
         <div class="order-header">
           <span class="order-id">#ORD-${order.id}</span>
           <span class="order-status-badge ${statusClass}">${order.status}</span>
         </div>
+        
         <div class="order-body">
-          <p><strong>👤 Pelanggan:</strong> ${order.nama}</p>
-          <p><strong>🧺 Layanan:</strong> ${order.layanan}</p>
-          <p><strong>📅 Jemput:</strong> ${jadwalJemput}</p>
-          <p><strong>🏠 Alamat:</strong> ${order.alamat}</p>
-          ${order.berat && order.berat !== '-' ? `<p><strong>⚖️ Berat:</strong> ${order.berat} kg</p>` : ''}
-          ${order.harga && order.harga !== '-' ? `<p><strong>💰 Total:</strong> Rp ${order.harga}</p>` : ''}
-          <p style="color: #059669; font-weight: bold; margin-top: 8px;">
-            <strong>🚚 Diantar:</strong> ${jadwalAntar}
-          </p>
+          <div class="status-info-row"><div class="icon-box">👤</div><div class="text-content"><label>Nama Anda</label><span>${order.nama}</span></div></div>
+          <div class="status-info-row"><div class="icon-box">🧺</div><div class="text-content"><label>Layanan</label><span>${order.layanan}</span></div></div>
+          <div class="status-info-row"><div class="icon-box">📝</div><div class="text-content"><label>Catatan Tambahan</label><span>${order.catatan || '-'}</span></div></div>
+          <div class="status-info-row"><div class="icon-box">⏰</div><div class="text-content"><label>Jadwal Penjemputan</label><span>${jadwalJemput}</span></div></div>
+          <div class="status-info-row"><div class="icon-box">🏠</div><div class="text-content"><label>Alamat Lengkap</label><span>${order.alamat}</span></div></div>
+
+          ${order.berat && order.berat !== '-' ? `<div class="status-info-row" style="background:#ecfdf5"><div class="icon-box">⚖️</div><div class="text-content"><label>Berat</label><span>${order.berat} kg</span></div></div>` : ''}
+          ${order.harga && order.harga !== '-' ? `<div class="status-info-row" style="background:#ecfdf5"><div class="icon-box">💰</div><div class="text-content"><label>Total</label><span>Rp ${order.harga}</span></div></div>` : ''}
+
+          <div class="status-info-row" style="background:#fff7ed"><div class="icon-box">🚚</div><div class="text-content"><label>Jadwal Diantar</label><span style="color:#ea580c">${jadwalAntar}</span></div></div>
+
           ${fotoHtml}
+
+          <button class="btn-pesan-lagi" onclick="isiOtomatisPesanLagi('${nAman}', '${order.nohp}', '${aAman}', '${order.layanan}', '${cAman}')">
+            🔄 PESAN LAGI
+          </button>
         </div>
       `;
       container.appendChild(card);
     });
-
   } catch (error) {
-    console.error('Fetch error:', error);
-    container.innerHTML = '<p style="text-align:center; color:red; grid-column: 1/-1;">Gagal mengambil data terbaru.</p>';
+    container.innerHTML = '<p style="text-align:center; color:red;">Gagal mengambil data.</p>';
   }
 }
 
-// 3. EVENT LISTENERS TOMBOL
+// 4. EVENT LISTENERS
 document.getElementById('btnCekStatus').onclick = loadStatusFromGAS;
-
-const refreshBtn = document.getElementById('btnRefreshStatus');
-if (refreshBtn) {
-  refreshBtn.onclick = function() {
-    this.classList.add('refresh-spin');
+if (document.getElementById('btnRefreshStatus')) {
+  document.getElementById('btnRefreshStatus').onclick = function() {
     this.disabled = true;
+    this.style.opacity = "0.7";
     loadStatusFromGAS().finally(() => {
-      setTimeout(() => {
-        this.classList.remove('refresh-spin');
-        this.disabled = false;
-      }, 800);
+      setTimeout(() => { this.disabled = false; this.style.opacity = "1"; }, 500);
     });
   };
 }
-
 document.getElementById('btnLogoutStatus').onclick = () => {
     document.getElementById('authStatus').style.display = 'block';
     document.getElementById('statusResult').style.display = 'none';
     document.getElementById('searchNoHP').value = '+62'; 
-    document.getElementById('orderGrid').innerHTML = '';
 };
 </script>
+
+
+
+
+
 
 
 
