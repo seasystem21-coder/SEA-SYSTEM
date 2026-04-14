@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sharing</title>
+
+
+  <!-- ================== CSS GLOBAL ================== -->
+  <style>
+
+    /* ================= BODY ================= */
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      margin: 0;
+      background: #f9fafb;
+      color: #1f2937;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    /* ================== HEADER ================== */
+    header {
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white;
+      padding: 40px 20px;
+      border-bottom: 5px solid #facc15;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: 1000px;
+      width: 95%;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto;
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #facc15;
+      padding: 8px;
+    }
+
+    .header-text h1 {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    .header-text p {
+      opacity: 0.9;
+      margin-bottom: 0; /* Diubah agar jarak bawah pas tanpa tombol */
+    }
+
+    /* ================== BUBBLES ================== */
+    .bubble {
+      position: absolute;
+      bottom: -50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      animation: rise linear forwards;
+    }
+
+    @keyframes rise {
+      from {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-120vh);
+        opacity: 0;
+      }
+    }
+
+    /* ================== TAB MENU ================== */
+    .tab-menu {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 1000px;
+      margin: 20px auto;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+      overflow-x: visible;
+    }
+
+    .tab-menu .tab-btn {
+      flex: 1 1 120px;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 50px;
+      background: #e2e8f0;
+      color: #1d4ed8;
+      font-weight: 600;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .tab-menu .tab-btn.active {
+      background: #3b82f6;
+      color: white;
+    }
+
+    .tab-menu .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 20%;
+      width: 60%;
+      height: 4px;
+      background: #facc15;
+      border-radius: 2px;
+    }
+
+    /* ================== TAB CONTENT ================== */
+    .tab-content {
+      display: none;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .tab-content.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ================== CARD & GRID ================== */
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ================== TOAST ================== */
+    #toast {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background: #3b82f6;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+      z-index: 9999;
+    }
+
+    #toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* ================== RESPONSIVE ================== */
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .form-group input,
+      .form-group select,
+      button[type=submit] {
+        font-size: 0.95rem;
+        padding: 10px;
+      }
+    }
+  </style>
+
+
+</head>
+
+<body>
+
+
+
+<!-- ========== MENU ========== -->
+<header>
+  <!-- Container header -->
+  <div class="header-inner">
+
+    <!-- Logo -->
+    <div class="logo">
+      <img 
+        src="https://raw.githubusercontent.com/seasystem21-coder/SEA-SYSTEM/main/Logo.png" 
+        alt="Sea Laundry Logo" 
+        width="80" 
+        height="80"
+      >
+    </div>
+
+    <!-- Teks header -->
+    <div class="header-text">
+      <h1>Sharing</h1>
+      <p>www.sharing.com</p>
+    </div>
+
+  </div>
+</header>
+
+<!-- Menu Tab -->
+<nav class="tab-menu">
+
+  <button class="tab-btn" data-tab="order">INPUT DATA</button>
+  <button class="tab-btn" data-tab="status">CEK DATA</button>
+
+</nav>
+
+
+
+
+
+
+<!-- ================== TAB INPUT DATA ================== -->
+<div class="tab-content" id="order">
+  <div class="card">
+    <h2>Input Dta</h2>
+
+    <form id="orderForm" class="modern-form">
+      <div class="form-grid">
+
+        <!-- Nama -->
+        <div class="form-group">
+          <input type="text" id="nama" placeholder=" " required>
+          <label for="nama">Nama Anda</label>
+          <span class="icon">👤</span>
+        </div>
+
+        <!-- No HP -->
+        <div class="form-group">
+          <input type="tel" id="nohp" placeholder=" " required>
+          <label for="nohp">No HP</label>
+          <span class="icon">📞</span>
+        </div>
+
+        <!-- Catatan Tambahan -->
+        <div class="form-group">
+          <input type="text" id="catatan" placeholder=" ">
+          <label for="catatan">Catatan Tambahan</label>
+          <span class="icon">📝</span>
+        </div>
+
+        <!-- Tombol Submit WA -->
+        <button type="submit" class="btn-wa">
+          Kirim Data
+        </button>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  /* ================== FORM LAYOUT ================== */
+  .modern-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .form-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px 40px 12px 12px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background: #f9fafb;
+    transition: all 0.3s;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 12px rgba(59,130,246,0.3);
+  }
+
+  /* Floating Labels */
+  .form-group label {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    color: #6b7280;
+    font-size: 0.95rem;
+    pointer-events: none;
+    transition: 0.3s ease all;
+  }
+
+  .form-group input:focus + label,
+  .form-group input:not(:placeholder-shown) + label {
+    top: -10px;
+    left: 10px;
+    background: #f9fafb;
+    font-size: 0.8rem;
+    color: #3b82f6;
+    padding: 0 5px;
+  }
+
+  .form-group .icon {
+    position: absolute;
+    right: 12px;
+    font-size: 1.2rem;
+    pointer-events: none;
+  }
+
+  /* ================== BUTTONS ================== */
+  .btn-wa {
+    width: 100%;
+    background: #25d366;
+    color: white;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+  }
+
+  .btn-wa:hover {
+    filter: brightness(0.9);
+    transform: scale(1.01);
+  }
+</style>
+
+
+
+
+
+
+
+
+
+
+<!-- ================= TAB CEK DATA ================= -->
+<div class="tab-content" id="status">
+  <div class="card">
+    <h2>Cek Data</h2>
+
+    <!-- Input Filter No HP -->
+    <div id="authStatus" class="auth-container">
+      <p class="auth-hint">Masukkan No HP anda untuk cek data</p>
+      <div class="input-group">
+        <input type="tel" id="searchNoHP" placeholder="08123...">
+        <button id="btnCekStatus">Cek</button>
+      </div>
+    </div>
+
+    <!-- Area Hasil (Awalnya Tersembunyi) -->
+    <div id="statusResult" style="display: none;">
+      <div class="result-header">
+        <h3>Data Ditemukan</h3>
+      </div>
+      
+      <div id="orderGrid" class="order-grid">
+        <!-- Hasil akan muncul di sini via JS -->
+      </div>
+
+      <!-- Container Tombol Bawah -->
+      <div class="action-buttons">
+        <button id="btnRefreshStatus" class="btn-refresh">REFRESH</button>
+        <button id="btnLogoutStatus">GANTI NOMOR HP</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* CSS Anda sudah sangat bagus, saya hanya menambahkan/memastikan beberapa hal agar pas dengan mode minimalis */
+.auth-container { margin-bottom: 25px; text-align: center; }
+.auth-hint { font-size: 0.85rem; color: #475569; margin-bottom: 15px; font-weight: 500; }
+.input-group { display: flex; gap: 8px; max-width: 400px; margin: 0 auto; }
+.result-header { margin: 20px 0 15px; border-left: 4px solid #16a34a; padding-left: 12px; }
+
+#searchNoHP { 
+  flex: 1; padding: 12px 16px; border-radius: 12px; 
+  border: 2px solid #cbd5e1; background: #ffffff; color: #1e293b; font-size: 1rem; 
+  font-weight: 600; transition: 0.3s; 
+}
+#searchNoHP:focus { border-color: #16a34a; outline: none; box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.1); }
+
+#btnCekStatus { 
+  background: #16a34a; color: white; border: none; padding: 0 24px; 
+  border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; 
+}
+
+.order-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
+
+.order-item-card { 
+  background: #ffffff; border-radius: 16px; padding: 18px; 
+  border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.order-header { 
+  display: flex; justify-content: space-between; align-items: center; 
+  margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f1f5f9;
+}
+
+.order-id { font-family: monospace; font-size: 0.8rem; color: #64748b; font-weight: 700; }
+.order-status-badge { background: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 100px; font-size: 0.7rem; font-weight: 800; }
+
+.status-info-row { display: flex; gap: 12px; margin-bottom: 12px; }
+.status-info-row label { font-size: 0.6rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; display: block; }
+.status-info-row span { font-size: 0.9rem; color: #1e293b; font-weight: 600; }
+
+.action-buttons { margin-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+#btnRefreshStatus, #btnLogoutStatus { padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; border: none; font-size: 0.8rem; }
+#btnRefreshStatus { background: #16a34a; color: white; }
+#btnLogoutStatus { background: #f1f5f9; color: #475569; }
+
+@media (max-width: 600px) {
+  .input-group { flex-direction: column; }
+  .action-buttons { grid-template-columns: 1fr; }
+}
+
+.spinner { width: 30px; height: 30px; margin: 20px auto; border: 3px solid #f3f3f3; border-top: 3px solid #16a34a; border-radius: 50%; animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
+
+
+
+
+
+
+
+<!-- ================= SHARE BUTTON & TOAST ================= -->
+<div id="shareBtn">Share Link</div>
+
+<div id="toast">Berhasil!</div>
+
+<style>
+  /* Tombol Share dengan Efek Menarik */
+  #shareBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    /* Gradasi Hijau Modern */
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    color: white;
+    padding: 15px 28px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-family: sans-serif;
+    cursor: pointer;
+    z-index: 9999999;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+    transition: all 0.3s ease;
+    /* Animasi denyut halus */
+    animation: pulseEffect 2s infinite;
+  }
+
+  /* Efek Hover & Klik */
+  #shareBtn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 12px 25px rgba(40, 167, 69, 0.5);
+  }
+
+  #shareBtn:active {
+    transform: scale(0.95);
+  }
+
+  /* Toast dengan Efek Blur (Modern) */
+  #toast {
+    visibility: hidden;
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px); /* Efek kaca */
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 12px;
+    z-index: 10000000;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-family: sans-serif;
+    border-left: 5px solid #28a745; /* Aksen hijau */
+  }
+
+  #toast.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Keyframe Animasi Denyut */
+  @keyframes pulseEffect {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+    70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+  }
+</style>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const btnShare = document.getElementById('shareBtn');
+    const toastBox = document.getElementById('toast');
+
+    btnShare.addEventListener('click', async () => {
+      
+      // --- CUSTOM DI SINI ---
+      const customTitle = "Pesanan Baru"; // Judul saat di-share
+      const customText  = "Halo, saya ingin memesan menu ini. Cek detailnya di link berikut:"; 
+      const customUrl   = "https://seasystem21-coder.github.io/SEA-SYSTEM/User.html"; 
+      // ----------------------
+
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: customTitle,
+            text: customText,
+            url: customUrl
+          });
+          showToast("Menu share terbuka!");
+        } else {
+          // Fallback: Copy link jika browser tidak support share API
+          await navigator.clipboard.writeText(`${customText} ${customUrl}`);
+          showToast("Pesan & Link disalin!");
+        }
+      } catch (err) {
+        console.log("Gagal share:", err);
+      }
+    });
+
+    function showToast(msg) {
+      toastBox.innerText = msg;
+      toastBox.classList.add("show");
+      setTimeout(() => toastBox.classList.remove("show"), 3000);
+    }
+  });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <p>&copy; Sharing System. All rights reserved.</p>
+</footer>
+
+<style>
+  /* ================== FOOTER ================== */
+  footer {
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  footer p {
+    margin: 5px 0;
+    font-weight: 600;
+  }
+</style>
+
+
+
+
+
+
+<!-- ========== JS INPUT DATA (OPTIMIZED & SYNCED) ========== -->
+<script>
+  const fields = ['nama', 'nohp', 'catatan'];
+
+  window.addEventListener('DOMContentLoaded', () => {
+    // 1. Restore Data dari LocalStorage
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const saved = localStorage.getItem('order_' + id);
+      if (saved) el.value = saved;
+      if (el.value) el.dispatchEvent(new Event('input'));
+    });
+
+    // 2. LOGIKA NAVIGASI TAB
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        contents.forEach(c => c.classList.remove('active'));
+        const targetTab = document.getElementById(btn.dataset.tab);
+        if (targetTab) targetTab.classList.add('active');
+      });
+    });
+  });
+
+  // Simpan input ke LocalStorage saat user mengetik
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return; 
+    el.addEventListener('input', () => {
+      localStorage.setItem('order_' + id, el.value);
+    });
+  });
+
+  // Format No HP (Hanya angka & Max 15 Digit)
+  const nohpInput = document.getElementById('nohp');
+  if (nohpInput) {
+    nohpInput.addEventListener('input', (e) => {
+      // Hanya ambil angka
+      let val = e.target.value.replace(/\D/g, ''); 
+      // Batasi maksimal 15 digit sesuai standar internasional
+      if (val.length > 15) val = val.slice(0, 15);
+      e.target.value = val;
+    });
+  }
+
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbyQ3DAk558c3NrmTZZEyVnp8fA2meq6YRdDbIdefUraHS3i_LrQzmawCJbekwhiRcXklg/exec';
+
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    if (!toast) { alert(msg); return; }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    toast.style.opacity = 1;
+    setTimeout(() => {
+      toast.style.opacity = 0;
+      setTimeout(() => toast.classList.remove('show'), 500);
+    }, 3000);
+  }
+
+  // ================= Form Submit (Spreadsheet Only) =================
+  const orderForm = document.getElementById('orderForm');
+  if (orderForm) {
+    orderForm.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const nama = String(document.getElementById('nama').value).trim();
+      const nohp = String(document.getElementById('nohp').value).replace(/\D/g, '');
+      const catatan = String(document.getElementById('catatan').value || "-").trim();
+
+      if (!nama || !nohp) {
+        alert('Nama dan No HP wajib diisi!');
+        return;
+      }
+
+      showToast('Sedang mengirim...');
+
+      fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: JSON.stringify({
+          type: 'Data', 
+          payload: { 
+            nama: nama, 
+            nohp: nohp,
+            catatan: catatan
+          }
+        })
+      })
+      .then(() => {
+        showToast('Pesanan berhasil disimpan!');
+        fields.forEach(id => localStorage.removeItem('order_' + id));
+        orderForm.reset();
+        // Reset input manual agar tidak nyangkut data lama
+        if (nohpInput) nohpInput.value = '';
+      })
+      .catch(err => {
+        console.error('Error:', err);
+        showToast('Gagal menyimpan data.');
+      });
+    });
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== JS CEK DATA (OPTIMIZED & SYNCED) ========== -->
+<script>
+// 1. LOGIC NAVIGASI & SEARCH FORMATTING
+const authArea = document.getElementById('authStatus');
+const resultArea = document.getElementById('statusResult');
+const btnLogout = document.getElementById('btnLogoutStatus');
+
+if (btnLogout) {
+  btnLogout.onclick = () => {
+    authArea.style.display = 'block';
+    resultArea.style.display = 'none';
+    const sInput = document.getElementById('searchNoHP');
+    if(sInput) sInput.value = ''; 
+    document.getElementById('orderGrid').innerHTML = '';
+  };
+}
+
+// FORMAT NO HP SEARCH (Hanya Angka & Max 15)
+const searchInputStatus = document.getElementById('searchNoHP');
+if (searchInputStatus) {
+  searchInputStatus.addEventListener('input', (e) => {
+    let val = e.target.value.replace(/\D/g, ''); 
+    if (val.length > 15) val = val.slice(0, 15);
+    e.target.value = val;
+  });
+}
+
+// 2. FUNGSI LOAD STATUS
+async function loadStatusFromGAS() {
+  const container = document.getElementById('orderGrid');
+  const inputNoHP = document.getElementById('searchNoHP').value.trim();
+  const cleanSearch = inputNoHP.replace(/\D/g, '');
+
+  if (cleanSearch.length < 5) {
+    alert("Masukkan nomor HP yang valid.");
+    return;
+  }
+
+  container.innerHTML = `<div class="spinner"></div><p style="text-align:center;">Mencari data...</p>`;
+  authArea.style.display = 'none';
+  resultArea.style.display = 'block';
+
+  try {
+    const response = await fetch(`${GAS_URL}?action=getOrders&t=${new Date().getTime()}`);
+    const data = await response.json();
+    
+    const filteredData = data.filter(order => {
+      const nohpSheet = String(order.nohp || "").replace(/\D/g, '');
+      return nohpSheet === cleanSearch;
+    });
+
+    if (filteredData.length === 0) {
+      container.innerHTML = `
+        <div style="text-align:center; grid-column: 1/-1; padding: 20px;">
+          <p style="color: #ef4444; font-weight: bold;">Data tidak ditemukan.</p>
+        </div>`;
+      return;
+    }
+
+
+    container.innerHTML = '';
+    filteredData.reverse().forEach(order => {
+      const card = document.createElement('div');
+      card.className = 'order-item-card';
+      
+      // Bagian status-badge Diterima telah dihapus
+      card.innerHTML = `
+        <div class="order-header">
+          <span class="order-id">#ORD-${order.id}</span>
+        </div>
+        <div class="order-body">
+          <div class="status-info-row">
+            <div class="icon-box">👤</div>
+            <div class="text-content">
+              <label>Nama</label>
+              <span>${order.nama}</span>
+            </div>
+          </div>
+          <div class="status-info-row">
+            <div class="icon-box">📝</div>
+            <div class="text-content">
+              <label>Catatan</label>
+              <span>${order.catatan || '-'}</span>
+            </div>
+          </div>
+          <div class="status-info-row">
+            <div class="icon-box">📅</div>
+            <div class="text-content">
+              <label>Waktu Pesan</label>
+              <span>${order.tanggal ? new Date(order.tanggal).toLocaleString('id-ID') : '-'}</span>
+            </div>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  } catch (error) {
+    container.innerHTML = `<p style="text-align:center; color:red; grid-column:1/-1;">Gagal mengambil data.</p>`;
+    console.error("Detail error:", error);
+  }
+}
+
+// 3. EVENT LISTENERS
+const btnCek = document.getElementById('btnCekStatus');
+if(btnCek) btnCek.onclick = loadStatusFromGAS;
+
+const btnRefresh = document.getElementById('btnRefreshStatus');
+if (btnRefresh) {
+  btnRefresh.onclick = loadStatusFromGAS;
+}
+</script>
+
+
+
+
+
+
+
+
+
+<!-- ========== JS HEADER & FOOTER ========== -->
+<script>
+  // ================= Gelembung Header & Footer =================
+  const headerElem = document.querySelector('header');
+  const footerElem = document.querySelector('footer');
+
+  function createBubble(elem) {
+    if (elem.querySelectorAll('.bubble').length > 20) return;
+
+    const bubble = document.createElement('div');
+    bubble.classList.add('bubble');
+
+    const size = Math.random() * 40 + 20;
+    bubble.style.width = size + 'px';
+    bubble.style.height = size + 'px';
+    bubble.style.left = Math.random() * 100 + '%';
+    bubble.style.animationDuration = (Math.random() * 6 + 6) + 's';
+
+    elem.appendChild(bubble);
+
+    bubble.addEventListener('animationend', () => bubble.remove());
+  }
+
+  setInterval(() => createBubble(headerElem), 800);
+  setInterval(() => createBubble(footerElem), 800);
+</script>
+
+
+
+</body>
+</html>
