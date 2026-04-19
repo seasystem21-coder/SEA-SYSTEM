@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QC MIL STANDARD</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3b82f6; /* Blue */
+            --primary-dark: #1d4ed8;
+            --success: #10b981; /* Green */
+            --warning: #f59e0b; /* Orange */
+            --danger: #ef4444; /* Red */
+            --bg: #f0f4f8;
+            --card: #ffffff;
+            --text-main: #1e293b;
+            --text-sub: #64748b;
+            --glass: rgba(255, 255, 255, 0.8);
+        }
+
+        * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { 
+            background-color: var(--bg); 
+            background-image: radial-gradient(at 0% 0%, hsla(210,100%,93%,1) 0, transparent 50%), 
+                              radial-gradient(at 50% 0%, hsla(225,100%,90%,1) 0, transparent 50%);
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Modern & Bright Header */
+        .header-section {
+            background: linear-gradient(135deg, #3b82f6, #6366f1);
+            padding: 40px 20px;
+            border-radius: 30px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.25);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-section::before {
+            content: "";
+            position: absolute;
+            top: -50px; right: -50px;
+            width: 150px; height: 150px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+
+        .header-section h1 { margin: 0; font-size: 1.8rem; font-weight: 800; letter-spacing: -1px; }
+        .header-section p { margin: 10px 0 0; opacity: 0.9; font-size: 0.9rem; font-weight: 500; }
+
+        .btn-view-table {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 12px 24px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 20px;
+            transition: 0.3s;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .btn-view-table:hover { background: white; color: var(--primary); transform: scale(1.05); }
+
+        /* Bright Card Styling */
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .field { margin-bottom: 15px; }
+        label { display: block; font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
+        
+        input, select {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #eef2f6;
+            border-radius: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            transition: 0.3s;
+            background: #fdfdfd;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Stats Dashboard - Colorful */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 25px 15px;
+            border-radius: 24px;
+            text-align: center;
+            border: 1px solid #eef2f6;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.02);
+            transition: 0.3s;
+        }
+
+        .stat-item:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
+
+        .stat-item small { 
+            display: block; 
+            font-size: 0.7rem; 
+            color: var(--text-sub); 
+            font-weight: 800; 
+            margin-bottom: 10px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-item span { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+
+        .rej-detail {
+            font-size: 0.85rem !important;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 5px;
+        }
+
+        .rej-detail b {
+            padding: 4px 10px;
+            border-radius: 10px;
+            background: #f8fafc;
+        }
+
+        /* Fancy Accordion */
+        .category { margin-bottom: 15px; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
+        
+        .cat-head {
+            width: 100%;
+            padding: 20px 25px;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            color: #fff;
+            transition: 0.3s;
+        }
+
+        .cat-head:active { transform: scale(0.98); }
+        .cat-head b { font-size: 1rem; font-weight: 700; }
+        .cat-head .counter { 
+            background: rgba(255,255,255,0.25); 
+            padding: 6px 15px; 
+            border-radius: 12px; 
+            font-size: 0.9rem; 
+            font-weight: 800;
+        }
+
+        .cat-body { display: none; padding: 15px 25px; background: white; border: 1px solid #eef2f6; border-top: none; }
+        .active .cat-body { display: block; }
+
+        .defect-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .defect-row:last-child { border: none; }
+        .defect-row span { font-size: 0.95rem; color: #475569; font-weight: 600; }
+        .defect-row input { width: 80px; text-align: center; padding: 10px; border-radius: 12px; border: 2px solid #f1f5f9; font-weight: 700; }
+
+        /* Float Action Result */
+        #result-banner {
+            padding: 25px;
+            border-radius: 24px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+            display: none;
+            margin: 25px 0;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .ok-theme { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .rej-theme { background: linear-gradient(135deg, #ef4444, #b91c1c); color: white; }
+
+        .btn-action {
+            width: 100%;
+            padding: 22px;
+            background: linear-gradient(135deg, #3b82f6, #6366f1); /* 🔥 sama seperti header */
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .btn-action:hover { background: #0f172a; transform: translateY(-3px); }
+
+        /* Modal Table */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); padding: 20px; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; max-width: 900px; width: 100%; max-height: 85vh; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 600px; }
+        th, td { border: 1px solid #f1f5f9; padding: 12px; text-align: center; }
+        th { background: #f8fafc; color: var(--primary); font-weight: 800; }
+
+        @media (max-width: 600px) {
+            .stats-container { grid-template-columns: 1fr; }
+            .header-section h1 { font-size: 1.5rem; }
+        }
+    </style>
+
+
+</head>
+<body>
+
+<div class="app-container">
+
+    <div class="header-section">
+        <h1>QC MIL STANDARD</h1>
+        <p id="clock">Memuat data...</p>
+        <button class="btn-view-table" onclick="openModal()">View Table MIL-STD</button>
+    </div>
+
+    <div class="card">
+        <div class="grid-layout">
+            <div class="field">
+                <label>Staff QC On Duty</label>
+                <select id="staff">
+                    <option value="">Pilih Petugas</option>
+                    <option value="Anom">Anom</option>
+                    <option value="Irna">Irna</option>
+                    <option value="Ismie">Ismie</option>
+                    <option value="Martini">Martini</option>
+                    <option value="Krestin">Krestin</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Nomor KF Produk</label>
+                <input type="text" id="kf" placeholder="KS2302-43">
+            </div>
+        </div>
+
+        <div class="grid-layout">
+            <div class="field">
+                <label>Total Lot Size (Pcs)</label>
+                <input type="text" id="lot" placeholder="Contoh: 27.000" oninput="handleLot(this)">
+            </div>
+
+            <div class="field">
+                <label>Nama Item Produk</label>
+                <input type="text" id="prod" placeholder="Input nama produk">
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="stats-container">
+        <div class="stat-item">
+            <small>Jumlah Sampel</small>
+            <span id="outSmp">0</span>
+        </div>
+
+        <div class="stat-item">
+            <small>Kode Sampling</small>
+            <span id="outKod">-</span>
+        </div>
+
+        <div class="stat-item">
+            <small>Batas Reject (AQL)</small>
+            <div id="outMax" class="rej-detail">
+                <b style="color:var(--danger)">-</b>
+                <b style="color:var(--warning)">-</b>
+                <b style="color:var(--success)">-</b>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT STATUS (WAJIB ADA) -->
+    <div id="result-banner" style="display:none; margin:20px 0; padding:15px; border-radius:10px; font-weight:bold; text-align:center;"></div>
+
+    <!-- DEFECT -->
+    <div class="category" id="cCr">
+        <button class="cat-head" style="background: linear-gradient(to right, #f87171, #ef4444)" onclick="toggle('cCr')">
+            <b>1. CRITICAL DEFECT</b> <span class="counter" id="tCr">0</span>
+        </button>
+        <div class="cat-body" id="listCr"></div>
+    </div>
+
+    <div class="category" id="cMa">
+        <button class="cat-head" style="background: linear-gradient(to right, #fbbf24, #f59e0b)" onclick="toggle('cMa')">
+            <b>2. MAJOR DEFECT</b> <span class="counter" id="tMa">0</span>
+        </button>
+        <div class="cat-body" id="listMa"></div>
+    </div>
+
+    <div class="category" id="cMi">
+        <button class="cat-head" style="background: linear-gradient(to right, #34d399, #10b981)" onclick="toggle('cMi')">
+            <b>3. MINOR DEFECT</b> <span class="counter" id="tMi">0</span>
+        </button>
+        <div class="cat-body" id="listMi"></div>
+    </div>
+
+    <!-- BUTTON -->
+    <button class="btn-action" id="btnSave" onclick="simpanLaporan()">
+        SIMPAN & SELESAIKAN
+    </button>
+
+</div>
+
+<!-- MODAL -->
+<div id="tableModal" class="modal">
+    <div class="modal-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px;">
+            <h2 style="margin:0; color: var(--primary)">MIL-STD 105E Reference Table</h2>
+            <button onclick="closeModal()" style="background:#f1f5f9; border:none; width: 40px; height: 40px; border-radius: 50%; font-size:1.2rem; cursor:pointer;">&times;</button>
+        </div>
+
+        <div style="overflow-x:auto">
+            <table id="referenceTable">
+                <thead>
+                    <tr>
+                        <th>Range Jumlah</th>
+                        <th>Kode</th>
+                        <th>Sampel</th>
+                        <th>Critical</th>
+                        <th>Major</th>
+                        <th>Minor</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <button onclick="closeModal()" style="margin-top:25px; width:100%; padding:18px; border-radius:15px; border:none; background:var(--primary); color:white; font-weight:bold; cursor:pointer;">
+            TUTUP REFERENSI
+        </button>
+    </div>
+</div>
+
+<script>
+// ================= KONFIG =================
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyAR9o12kbDLEDnRcQ1cEpDEDechAvMaJFAiw8dbc9FqMF3NyYw8_qQIrdHaCvZJ6AvQQ/exec";
+
+const config = {
+    cr: ["Gambar/Text Salah", "Kontaminasi Berbahaya", "Salah Susunan", "Tercampur Produk", "Tanpa Varnish", "Jenis Kertas Salah", "Gramatur Salah", "Ukuran Salah", "Lem Lepas", "Lengket", "Open Force Out", "Warna Out Standar"],
+    ma: ["Goresan > 0.1mm", "Kemasan Keriput", "Pecah Ponch", "Miss-Register Ponch", "Ponch Tak Tandes", "Luntur/Blobor"],
+    mi: ["Vernis Buram", "Kemasan Kotor", "Shrinking Bolong", "Berserabut", "Tebal Tipis Warna", "Miss-Register Cetak"]
+};
+
+const milStdTable = [
+    {min:1, max:8, kode:"A", sample:125, rjCr:1, rjMa:1, rjMi:1},
+    {min:9, max:15, kode:"B", sample:125, rjCr:1, rjMa:1, rjMi:1},
+    {min:16, max:25, kode:"C", sample:125, rjCr:1, rjMa:1, rjMi:1},
+    {min:26, max:50, kode:"D", sample:125, rjCr:1, rjMa:1, rjMi:1},
+    {min:51, max:90, kode:"E", sample:125, rjCr:1, rjMa:1, rjMi:2},
+    {min:91, max:150, kode:"F", sample:125, rjCr:1, rjMa:1, rjMi:2},
+    {min:151, max:280, kode:"G", sample:125, rjCr:1, rjMa:2, rjMi:3},
+    {min:281, max:500, kode:"H", sample:125, rjCr:1, rjMa:2, rjMi:4},
+    {min:501, max:1200, kode:"J", sample:125, rjCr:1, rjMa:3, rjMi:6},
+    {min:1201, max:3200, kode:"K", sample:125, rjCr:1, rjMa:4, rjMi:8},
+    {min:3201, max:10000, kode:"L", sample:125, rjCr:1, rjMa:6, rjMi:11},
+    {min:10001, max:35000, kode:"M", sample:500, rjCr:2, rjMa:8, rjMi:15},
+    {min:35001, max:150000, kode:"N", sample:500, rjCr:2, rjMa:11, rjMi:22},
+    {min:150001, max:500000, kode:"P", sample:800, rjCr:3, rjMa:15, rjMi:22},
+    {min:500001, max:999999999, kode:"Q", sample:1250, rjCr:4, rjMa:22, rjMi:22}
+];
+
+let activeLimit = { rjCr: 0, rjMa: 0, rjMi: 0, sample: 0 };
+
+// ================= LOCAL STORAGE =================
+function saveToLocal() {
+    const data = {
+        staff: staff.value,
+        kf: kf.value,
+        prod: prod.value,
+        lot: lot.value,
+        cr: Array.from(document.getElementsByClassName('inCr')).map(i => i.value),
+        ma: Array.from(document.getElementsByClassName('inMa')).map(i => i.value),
+        mi: Array.from(document.getElementsByClassName('inMi')).map(i => i.value)
+    };
+    localStorage.setItem("qc_data", JSON.stringify(data));
+}
+
+function loadFromLocal() {
+    const data = JSON.parse(localStorage.getItem("qc_data"));
+    if (!data) return;
+
+    staff.value = data.staff || "";
+    kf.value = data.kf || "";
+    prod.value = data.prod || "";
+    lot.value = data.lot || "";
+
+    handleLot(lot);
+
+    setTimeout(() => {
+        document.querySelectorAll('.inCr').forEach((el, i) => el.value = data.cr?.[i] || 0);
+        document.querySelectorAll('.inMa').forEach((el, i) => el.value = data.ma?.[i] || 0);
+        document.querySelectorAll('.inMi').forEach((el, i) => el.value = data.mi?.[i] || 0);
+        calculate();
+    }, 100);
+}
+
+// ================= INIT =================
+function init() {
+    render('listCr', config.cr, 'inCr');
+    render('listMa', config.ma, 'inMa');
+    render('listMi', config.mi, 'inMi');
+    populateReferenceTable();
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    loadFromLocal(); // 🔥 restore data
+}
+
+// ================= JAM =================
+function updateClock() {
+    const now = new Date();
+    const jam = now.toLocaleTimeString('id-ID');
+    const tanggal = now.toLocaleDateString('id-ID');
+
+    const el = document.getElementById("clock");
+    if (el) el.textContent = `${tanggal} | ${jam}`;
+}
+
+// ================= MODAL =================
+function openModal() {
+    const m = document.getElementById("tableModal");
+    if (m) m.style.display = "flex";
+}
+
+function closeModal() {
+    const m = document.getElementById("tableModal");
+    if (m) m.style.display = "none";
+}
+
+// ================= ACCORDION =================
+function toggle(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle("active");
+}
+
+// ================= RENDER =================
+function render(id, arr, cls) {
+    const t = document.getElementById(id);
+    if (!t) return;
+
+    t.innerHTML = "";
+    arr.forEach(x => {
+        t.innerHTML += `
+        <div class="defect-row">
+            <span>${x}</span>
+            <input type="number" class="${cls}" value="0" min="0" oninput="calculate()">
+        </div>`;
+    });
+}
+
+// ================= TABLE =================
+function populateReferenceTable() {
+    const body = document.getElementById('tableBody');
+    if (!body) return;
+
+    body.innerHTML = "";
+    milStdTable.forEach(d => {
+        body.innerHTML += `<tr>
+            <td>${d.min.toLocaleString('id-ID')} - ${d.max > 1000000 ? 'Ke Atas' : d.max.toLocaleString('id-ID')}</td>
+            <td>${d.kode}</td>
+            <td>${d.sample}</td>
+            <td>Rj:${d.rjCr}</td>
+            <td>Rj:${d.rjMa}</td>
+            <td>Rj:${d.rjMi}</td>
+        </tr>`;
+    });
+}
+
+// ================= LOT =================
+function handleLot(el) {
+    let raw = el.value.replace(/\D/g, "");
+    el.value = raw.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    let num = parseInt(raw || "0");
+
+    const d = milStdTable.find(x => num >= x.min && num <= x.max);
+
+    if (d) {
+        activeLimit = d;
+        outSmp.textContent = d.sample.toLocaleString('id-ID');
+        outKod.textContent = d.kode;
+        outMax.innerHTML = `
+            <b style="color:red">CRITICAL: ${d.rjCr}</b>
+            <b style="color:orange">MAJOR: ${d.rjMa}</b>
+            <b style="color:green">MINOR: ${d.rjMi}</b>`;
+    } else {
+        activeLimit = { rjCr: 0, rjMa: 0, rjMi: 0, sample: 0 };
+        outSmp.textContent = "0";
+        outKod.textContent = "-";
+        outMax.innerHTML = "<b>-</b><b>-</b><b>-</b>";
+    }
+
+    calculate();
+}
+
+// ================= HITUNG =================
+function calculate() {
+    const sum = (c) => Array.from(document.getElementsByClassName(c))
+        .reduce((a, b) => a + parseInt(b.value || 0), 0);
+
+    const cr = sum('inCr');
+    const ma = sum('inMa');
+    const mi = sum('inMi');
+
+    tCr.textContent = cr;
+    tMa.textContent = ma;
+    tMi.textContent = mi;
+
+    const b = document.getElementById('result-banner');
+    if (!b) return;
+
+    if (lot.value && activeLimit.sample > 0) {
+        b.style.display = "block";
+
+        const rej =
+            (activeLimit.rjCr > 0 && cr >= activeLimit.rjCr) ||
+            (activeLimit.rjMa > 0 && ma >= activeLimit.rjMa) ||
+            (activeLimit.rjMi > 0 && mi >= activeLimit.rjMi);
+
+        b.textContent = rej ? "⚠️ STATUS: REJECTED" : "✅ STATUS: PASSED (OK)";
+        b.className = rej ? "rej-theme" : "ok-theme";
+    } else {
+        b.style.display = "none";
+    }
+
+    saveToLocal(); // 🔥 auto save
+}
+
+// ================= AUTO SAVE INPUT =================
+staff.oninput = saveToLocal;
+kf.oninput = saveToLocal;
+prod.oninput = saveToLocal;
+lot.oninput = () => {
+    handleLot(lot);
+    saveToLocal();
+};
+
+// ================= KIRIM DATA =================
+async function simpanLaporan() {
+    const btn = document.getElementById('btnSave');
+
+    if (!staff.value || !lot.value) {
+        alert("Mohon lengkapi data!");
+        return;
+    }
+
+    const konfirmasi = confirm("Yakin data sudah benar dan ingin disimpan?");
+    if (!konfirmasi) return;
+
+    const payload = {
+        action: "save_qc",
+        tanggal: new Date().toLocaleString('id-ID'),
+        staffQC: staff.value,
+        noKF: kf.value,
+        namaProduk: prod.value,
+        jumlahLot: lot.value,
+        kodeSampling: outKod.textContent,
+        jumlahSampel: outSmp.textContent,
+        totalKritis: tCr.textContent,
+        totalMajor: tMa.textContent,
+        totalMinor: tMi.textContent,
+        status: document.getElementById('result-banner').textContent
+    };
+
+    btn.disabled = true;
+    btn.textContent = "Mengirim...";
+
+    try {
+        const res = await fetch(SCRIPT_URL, {
+            method: "POST",
+            body: new URLSearchParams({
+                payload: JSON.stringify(payload)
+            })
+        });
+
+        const result = await res.json();
+
+        if (result.result === "success") {
+            alert("✅ Data berhasil disimpan!");
+            localStorage.removeItem("qc_data"); // 🔥 reset setelah sukses
+            location.reload();
+        } else {
+            alert("❌ Gagal: " + result.message);
+            btn.disabled = false;
+            btn.textContent = "SIMPAN & SELESAIKAN";
+        }
+
+    } catch (err) {
+        alert("❌ Gagal kirim data!");
+        btn.disabled = false;
+        btn.textContent = "SIMPAN & SELESAIKAN";
+    }
+}
+
+// ================= START =================
+window.onload = init;
+
+</script>
+
+
+
+</body>
+</html>
